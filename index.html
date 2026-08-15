@@ -2,58 +2,70 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#090b10">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0,
+           maximum-scale=1.0, user-scalable=no,
+           viewport-fit=cover"
+>
+
+<meta name="theme-color" content="#080a0f">
 
 <title>Dice Roller</title>
 
 <style>
+
+/* =========================================================
+   VARIABLES
+========================================================= */
+
 :root {
   --bg1: #171b27;
-  --bg2: #06070b;
+  --bg2: #05060a;
 
-  --panel: rgba(18,22,31,.88);
+  --panel: rgba(20,24,34,.88);
 
-  --text: #fff;
-  --muted: #aab2c0;
+  --text: #ffffff;
+  --muted: #aeb6c5;
 
-  --die-bg: #f8f7f2;
-  --die-bg2: #fff;
-  --pip: #11151b;
+  --die-bg: #f5f4ef;
+  --die-bg2: #ffffff;
 
-  --border: #fff;
+  --pip: #101319;
+
+  --border: #ffffff;
   --border-width: 0px;
-  --radius: 26px;
+  --radius: 28px;
 
   --glow: rgba(255,255,255,0);
 
-  --button: #ffb52e;
-  --button2: #ffd36d;
-  --button-text: #17120a;
+  --button: #ffb62e;
+  --button2: #ffd66f;
+  --button-text: #151108;
 }
+
+
+/* =========================================================
+   RESET
+========================================================= */
 
 * {
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 html,
 body {
-  margin: 0;
   width: 100%;
   height: 100%;
+  margin: 0;
+
   overflow: hidden;
 }
 
 body {
   min-height: 100dvh;
-
-  background:
-    radial-gradient(
-      circle at 50% 5%,
-      var(--bg1),
-      var(--bg2) 78%
-    );
 
   color: var(--text);
 
@@ -64,13 +76,21 @@ body {
     "Segoe UI",
     sans-serif;
 
+  background:
+    radial-gradient(
+      circle at 50% 5%,
+      var(--bg1),
+      var(--bg2) 78%
+    );
+
   transition:
     background .35s ease;
 }
 
-/* ==========================================
+
+/* =========================================================
    APP
-========================================== */
+========================================================= */
 
 .app {
   width: 100%;
@@ -78,12 +98,12 @@ body {
 
   max-width: 1100px;
 
-  margin: auto;
+  margin: 0 auto;
 
   padding:
-    max(7px, env(safe-area-inset-top))
-    12px
-    max(7px, env(safe-area-inset-bottom));
+    max(6px, env(safe-area-inset-top))
+    10px
+    max(6px, env(safe-area-inset-bottom));
 
   display: grid;
 
@@ -92,38 +112,51 @@ body {
     1fr
     auto;
 
-  gap: 6px;
+  gap: 5px;
 
   overflow: hidden;
 }
 
-/* ==========================================
+
+/* =========================================================
    HEADER
-========================================== */
+========================================================= */
 
 header {
   text-align: center;
+
+  position: relative;
+
+  z-index: 10;
 }
 
 h1 {
-  margin: 0 0 6px;
+  margin: 0 0 5px;
 
   font-size:
-    clamp(1.45rem, 4.5vw, 2.5rem);
+    clamp(
+      1.35rem,
+      4vw,
+      2.4rem
+    );
 
   line-height: 1;
 
   letter-spacing: -.045em;
 }
 
+
+/* =========================================================
+   TOP BUTTONS
+========================================================= */
+
 .top-controls {
   display: flex;
 
   justify-content: center;
-
   align-items: center;
 
-  gap: 6px;
+  gap: 5px;
 
   flex-wrap: wrap;
 }
@@ -134,44 +167,59 @@ h1 {
     rgba(255,255,255,.18);
 
   background:
-    rgba(255,255,255,.07);
+    rgba(255,255,255,.075);
 
   color:
     var(--text);
 
-  border-radius: 10px;
+  border-radius: 9px;
 
   padding:
-    6px
-    11px;
+    6px 10px;
 
-  font-size: .8rem;
+  font-size:
+    .78rem;
 
-  font-weight: 800;
+  font-weight:
+    850;
 
-  cursor: pointer;
+  cursor:
+    pointer;
 
-  touch-action: manipulation;
+  touch-action:
+    manipulation;
+
+  white-space:
+    nowrap;
 }
 
 .small-button:active {
-  transform: scale(.96);
+  transform:
+    scale(.96);
 }
 
-/* ==========================================
-   DICE SELECTORS
-========================================== */
+.small-button.active {
+  background:
+    rgba(255,255,255,.18);
+
+  border-color:
+    rgba(255,255,255,.4);
+}
+
+
+/* =========================================================
+   DICE CONTROLS
+========================================================= */
 
 .dice-controls {
   display: flex;
 
   justify-content: center;
-
   align-items: center;
 
-  gap: 5px;
+  gap: 4px;
 
-  margin-top: 5px;
+  margin-top: 4px;
 
   flex-wrap: wrap;
 }
@@ -183,6 +231,9 @@ h1 {
 
   gap: 4px;
 
+  padding:
+    4px 6px;
+
   background:
     var(--panel);
 
@@ -190,11 +241,8 @@ h1 {
     1px solid
     rgba(255,255,255,.1);
 
-  border-radius: 9px;
-
-  padding:
-    4px
-    6px;
+  border-radius:
+    8px;
 }
 
 .die-control span {
@@ -202,7 +250,7 @@ h1 {
     var(--muted);
 
   font-size:
-    .68rem;
+    .65rem;
 
   font-weight:
     850;
@@ -211,11 +259,11 @@ h1 {
 select {
   appearance: none;
 
-  background:
-    rgba(0,0,0,.35);
-
   color:
     var(--text);
+
+  background:
+    rgba(0,0,0,.4);
 
   border:
     1px solid
@@ -225,26 +273,58 @@ select {
     6px;
 
   padding:
-    4px
-    20px
-    4px
-    6px;
+    4px 18px 4px 6px;
 
   font-size:
-    .76rem;
+    .74rem;
 
   font-weight:
     850;
 }
 
-/* ==========================================
+
+/* =========================================================
+   AUTO CONTROLS
+========================================================= */
+
+.auto-controls {
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+
+  gap: 5px;
+
+  margin-top: 4px;
+
+  flex-wrap: wrap;
+}
+
+.auto-label {
+  color:
+    var(--muted);
+
+  font-size:
+    .7rem;
+
+  font-weight:
+    800;
+}
+
+#intervalSelect {
+  min-width:
+    70px;
+}
+
+
+/* =========================================================
    DICE STAGE
-========================================== */
+========================================================= */
 
 .stage {
-  min-height: 0;
-
   position: relative;
+
+  min-height: 0;
 
   overflow: hidden;
 
@@ -254,9 +334,13 @@ select {
   justify-content: center;
 }
 
+
 /*
-  This is the actual arena in which
-  the dice bounce and roll.
+  Dice arena.
+
+  IMPORTANT:
+  Nothing inside this area can cause
+  the page itself to scroll.
 */
 
 .dice {
@@ -265,27 +349,34 @@ select {
   width: 100%;
   height: 100%;
 
+  min-height: 0;
+
   display: flex;
 
   align-items: center;
   justify-content: center;
 
   gap:
-    clamp(10px, 2vw, 24px);
+    clamp(
+      8px,
+      2vw,
+      24px
+    );
 
   overflow: hidden;
 }
 
-/* ==========================================
-   DIE
-========================================== */
+
+/* =========================================================
+   INDIVIDUAL DIE
+========================================================= */
 
 .die {
   --size:
     min(
       31vw,
-      32vh,
-      285px
+      45vh,
+      330px
     );
 
   width:
@@ -294,15 +385,35 @@ select {
   height:
     var(--size);
 
-  min-width: 60px;
-  min-height: 60px;
+  min-width:
+    55px;
 
-  max-width: 285px;
-  max-height: 285px;
+  min-height:
+    55px;
 
-  position: relative;
+  max-width:
+    330px;
 
-  flex: 0 1 auto;
+  max-height:
+    330px;
+
+  flex:
+    0 1 auto;
+
+  position:
+    relative;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  flex-shrink:
+    1;
 
   background:
     linear-gradient(
@@ -323,29 +434,27 @@ select {
     var(--radius);
 
   box-shadow:
-    0 15px 32px
+    0 16px 35px
       rgba(0,0,0,.45),
 
-    0 0 30px
+    0 0 35px
       var(--glow),
 
-    inset 0 -6px 0
+    inset 0 -7px 0
       rgba(0,0,0,.08);
-
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
 
   font-size:
     clamp(
-      1.8rem,
-      7vw,
-      4.5rem
+      2rem,
+      8vw,
+      5rem
     );
 
   font-weight:
     950;
+
+  line-height:
+    1;
 
   user-select:
     none;
@@ -354,45 +463,56 @@ select {
     transform;
 
   transition:
-    background .3s,
-    color .3s,
-    border .3s,
-    border-radius .3s,
-    box-shadow .3s;
+    background .3s ease,
+    color .3s ease,
+    border .3s ease,
+    border-radius .3s ease,
+    box-shadow .3s ease;
 }
 
-/* ==========================================
-   D6 LABEL
-========================================== */
+
+/* =========================================================
+   DIE LABEL
+========================================================= */
 
 .die-label {
-  position: absolute;
+  position:
+    absolute;
 
-  right: 7px;
-  bottom: 5px;
+  right:
+    7px;
+
+  bottom:
+    5px;
 
   font-size:
     clamp(
-      .42rem,
-      1.2vw,
+      .4rem,
+      1.1vw,
       .62rem
     );
 
-  line-height: 1;
+  font-weight:
+    900;
 
-  font-weight: 900;
+  line-height:
+    1;
 
-  opacity: .38;
+  opacity:
+    .35;
 
-  pointer-events: none;
+  pointer-events:
+    none;
 }
 
-/* ==========================================
-   HUGE PIPS
-========================================== */
+
+/* =========================================================
+   HUGE SIX-SIDED PIPS
+========================================================= */
 
 .die.pips {
-  display: grid;
+  display:
+    grid;
 
   grid-template-columns:
     repeat(3, 1fr);
@@ -401,220 +521,371 @@ select {
     repeat(3, 1fr);
 
   /*
-    MUCH less empty padding.
-    This lets the pips occupy almost
-    the entire face.
+    Almost no empty margin.
   */
 
-  padding: 4%;
+  padding:
+    1.5%;
 }
 
+
 /*
-  These are deliberately enormous.
+  HUGE PIPS.
+
+  These deliberately take up most
+  of each grid cell.
 */
 
 .pip {
-  width: 88%;
+  width:
+    94%;
 
-  aspect-ratio: 1;
+  aspect-ratio:
+    1 / 1;
 
-  border-radius: 50%;
+  border-radius:
+    50%;
 
   background:
     var(--pip);
 
-  place-self: center;
+  place-self:
+    center;
 
-  opacity: 0;
+  opacity:
+    0;
 
   transform:
     scale(.3);
 
   transition:
-    opacity .05s,
-    transform .05s;
+    opacity .04s,
+    transform .04s;
 }
 
 .pip.on {
-  opacity: 1;
+  opacity:
+    1;
 
   transform:
     scale(1);
 }
 
-/* ==========================================
-   BOUNCING ROLL ANIMATION
-========================================== */
+
+/* =========================================================
+   1 DIE
+========================================================= */
+
+.dice.count-1 .die {
+  --size:
+    min(
+      72vw,
+      67vh,
+      520px
+    );
+}
+
+
+/* =========================================================
+   2 DICE
+========================================================= */
 
 /*
-  Each die gets a different animation
-  so they move independently.
+  On narrow phones the two dice are stacked.
 */
+
+.dice.count-2 {
+  flex-direction:
+    column;
+
+  justify-content:
+    center;
+
+  gap:
+    clamp(
+      6px,
+      2vh,
+      14px
+    );
+}
+
+.dice.count-2 .die {
+  --size:
+    min(
+      70vw,
+      37vh,
+      330px
+    );
+}
+
+
+/*
+  On wider screens, put them side-by-side.
+*/
+
+@media (
+  min-width: 700px
+) {
+
+  .dice.count-2 {
+    flex-direction:
+      row;
+  }
+
+  .dice.count-2 .die {
+    --size:
+      min(
+        40vw,
+        62vh,
+        390px
+      );
+  }
+
+}
+
+
+/* =========================================================
+   3 DICE
+========================================================= */
+
+.dice.count-3 .die {
+  --size:
+    min(
+      29vw,
+      35vh,
+      245px
+    );
+}
+
+
+/* =========================================================
+   4–5 DICE
+========================================================= */
+
+.dice.count-4 .die,
+.dice.count-5 .die {
+  --size:
+    min(
+      21vw,
+      27vh,
+      190px
+    );
+}
+
+
+/* =========================================================
+   6–7 DICE
+========================================================= */
+
+.dice.count-6 .die,
+.dice.count-7 .die {
+  --size:
+    min(
+      16vw,
+      21vh,
+      145px
+    );
+}
+
+
+/* =========================================================
+   8–10 DICE
+========================================================= */
+
+.dice.count-8 .die,
+.dice.count-9 .die,
+.dice.count-10 .die {
+  --size:
+    min(
+      13vw,
+      17vh,
+      115px
+    );
+}
+
+
+/* =========================================================
+   ROLLING ANIMATIONS
+========================================================= */
 
 .die.rolling {
   animation-duration:
-    1.15s;
+    1.25s;
 
   animation-timing-function:
-    cubic-bezier(.18,.8,.25,1);
+    cubic-bezier(.16,.78,.22,1);
 
   animation-fill-mode:
     both;
 }
 
+
 /*
-  Die #1:
-  Comes from the left,
-  bounces toward the right,
-  then lands in the middle.
+  LEFT DIE
 */
 
 .die.roll-left {
   animation-name:
-    rollFromLeft;
+    rollLeft;
 }
 
-@keyframes rollFromLeft {
+@keyframes rollLeft {
 
   0% {
     transform:
       translate(
-        -65vw,
-        12vh
+        -80vw,
+        10vh
       )
-      rotate(-720deg)
-      scale(.72);
+      rotate(-900deg)
+      scale(.55);
   }
 
-  25% {
+  20% {
     transform:
       translate(
-        -22vw,
-        -5vh
+        -34vw,
+        -8vh
       )
-      rotate(260deg)
-      scale(1.04);
+      rotate(-500deg)
+      scale(.92);
   }
 
-  45% {
+  38% {
     transform:
       translate(
-        25vw,
-        7vh
-      )
-      rotate(620deg)
-      scale(.95);
-  }
-
-  62% {
-    transform:
-      translate(
-        13vw,
-        -3vh
-      )
-      rotate(800deg)
-      scale(1.02);
-  }
-
-  77% {
-    transform:
-      translate(
-        -5vw,
-        2vh
-      )
-      rotate(960deg)
-      scale(.98);
-  }
-
-  90% {
-    transform:
-      translate(
-        2vw,
-        -1vh
-      )
-      rotate(1080deg)
-      scale(1.01);
-  }
-
-  100% {
-    transform:
-      translate(
-        0,
-        0
-      )
-      rotate(1080deg)
-      scale(1);
-  }
-}
-
-/*
-  Die #2:
-  Comes from the right and follows
-  a different bouncing path.
-*/
-
-.die.roll-right {
-  animation-name:
-    rollFromRight;
-}
-
-@keyframes rollFromRight {
-
-  0% {
-    transform:
-      translate(
-        65vw,
-        -10vh
-      )
-      rotate(720deg)
-      scale(.72);
-  }
-
-  23% {
-    transform:
-      translate(
-        20vw,
+        31vw,
         8vh
       )
-      rotate(-260deg)
+      rotate(380deg)
       scale(1.05);
   }
 
-  43% {
+  53% {
     transform:
       translate(
-        -26vw,
-        -5vh
+        17vw,
+        -4vh
       )
-      rotate(-620deg)
-      scale(.94);
+      rotate(620deg)
+      scale(.96);
   }
 
-  60% {
+  68% {
     transform:
       translate(
         -13vw,
         4vh
       )
-      rotate(-820deg)
-      scale(1.03);
+      rotate(820deg)
+      scale(1.02);
   }
 
-  77% {
+  83% {
     transform:
       translate(
-        6vw,
+        5vw,
         -2vh
       )
-      rotate(-970deg)
-      scale(.98);
+      rotate(990deg)
+      scale(.99);
   }
 
-  91% {
+  94% {
     transform:
       translate(
-        -2vw,
+        -1vw,
         1vh
+      )
+      rotate(1080deg)
+      scale(1.01);
+  }
+
+  100% {
+    transform:
+      translate(0,0)
+      rotate(1080deg)
+      scale(1);
+  }
+}
+
+
+/*
+  RIGHT DIE
+*/
+
+.die.roll-right {
+  animation-name:
+    rollRight;
+}
+
+@keyframes rollRight {
+
+  0% {
+    transform:
+      translate(
+        80vw,
+        -10vh
+      )
+      rotate(900deg)
+      scale(.55);
+  }
+
+  20% {
+    transform:
+      translate(
+        34vw,
+        8vh
+      )
+      rotate(500deg)
+      scale(.92);
+  }
+
+  38% {
+    transform:
+      translate(
+        -31vw,
+        -8vh
+      )
+      rotate(-380deg)
+      scale(1.05);
+  }
+
+  53% {
+    transform:
+      translate(
+        -17vw,
+        4vh
+      )
+      rotate(-620deg)
+      scale(.96);
+  }
+
+  68% {
+    transform:
+      translate(
+        13vw,
+        -4vh
+      )
+      rotate(-820deg)
+      scale(1.02);
+  }
+
+  83% {
+    transform:
+      translate(
+        -5vw,
+        2vh
+      )
+      rotate(-990deg)
+      scale(.99);
+  }
+
+  94% {
+    transform:
+      translate(
+        1vw,
+        -1vh
       )
       rotate(-1080deg)
       scale(1.01);
@@ -622,18 +893,15 @@ select {
 
   100% {
     transform:
-      translate(
-        0,
-        0
-      )
+      translate(0,0)
       rotate(-1080deg)
       scale(1);
   }
 }
 
+
 /*
-  Additional dice get their own
-  independent paths.
+  THIRD / OTHER DICE
 */
 
 .die.roll-third {
@@ -646,88 +914,170 @@ select {
   0% {
     transform:
       translate(
-        -50vw,
-        -30vh
+        -70vw,
+        -35vh
       )
-      rotate(-540deg)
-      scale(.65);
+      rotate(-760deg)
+      scale(.5);
   }
 
-  35% {
+  28% {
     transform:
       translate(
-        30vw,
-        15vh
+        40vw,
+        18vh
       )
-      rotate(450deg)
-      scale(1.04);
+      rotate(520deg)
+      scale(1.05);
   }
 
-  60% {
+  50% {
     transform:
       translate(
-        -18vw,
-        -8vh
+        -30vw,
+        -13vh
       )
-      rotate(-700deg)
-      scale(.96);
+      rotate(-550deg)
+      scale(.94);
   }
 
-  82% {
+  70% {
     transform:
       translate(
-        5vw,
-        3vh
+        15vw,
+        7vh
       )
-      rotate(860deg)
-      scale(1.01);
+      rotate(790deg)
+      scale(1.02);
+  }
+
+  88% {
+    transform:
+      translate(
+        -4vw,
+        -2vh
+      )
+      rotate(-920deg)
+      scale(.99);
   }
 
   100% {
     transform:
       translate(0,0)
-      rotate(900deg)
+      rotate(-900deg)
       scale(1);
   }
 }
 
-/* ==========================================
-   MANY DICE
-========================================== */
 
-.dice.four-plus .die {
+/* =========================================================
+   PASS THE BALL
+========================================================= */
 
-  --size:
-    min(
-      20vw,
-      22vh,
-      175px
-    );
+.pass-message {
+  position:
+    absolute;
+
+  inset:
+    0;
+
+  z-index:
+    50;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  text-align:
+    center;
+
+  padding:
+    20px;
+
+  pointer-events:
+    none;
+
+  opacity:
+    0;
+
+  transform:
+    scale(.7);
+
+  transition:
+    opacity .25s ease,
+    transform .3s cubic-bezier(.2,.9,.2,1);
 }
 
-.dice.six-plus .die {
+.pass-message.visible {
+  opacity:
+    1;
 
-  --size:
-    min(
-      15vw,
-      18vh,
-      135px
-    );
+  transform:
+    scale(1);
 }
 
-.dice.eight-plus .die {
-
-  --size:
-    min(
-      12vw,
-      15vh,
-      105px
+.pass-message-inner {
+  padding:
+    clamp(
+      20px,
+      5vw,
+      55px
+    )
+    clamp(
+      25px,
+      7vw,
+      75px
     );
+
+  border-radius:
+    28px;
+
+  background:
+    rgba(0,0,0,.82);
+
+  border:
+    3px solid
+    rgba(255,255,255,.7);
+
+  box-shadow:
+    0 20px 70px
+      rgba(0,0,0,.7),
+
+    0 0 50px
+      var(--glow);
+
+  backdrop-filter:
+    blur(10px);
+
+  font-size:
+    clamp(
+      2.2rem,
+      10vw,
+      6rem
+    );
+
+  line-height:
+    .95;
+
+  font-weight:
+    1000;
+
+  letter-spacing:
+    -.045em;
+
+  text-transform:
+    uppercase;
 }
 
-/* ==========================================
-   ROLL BUTTON
-========================================== */
+
+/* =========================================================
+   BOTTOM
+========================================================= */
 
 .bottom {
   display:
@@ -736,31 +1086,37 @@ select {
   justify-content:
     center;
 
+  align-items:
+    center;
+
   padding:
-    2px
-    0;
+    2px 0;
 }
 
-#rollButton {
 
+/* =========================================================
+   BIG ROLL BUTTON
+========================================================= */
+
+#rollButton {
   width:
     min(
       100%,
-      560px
+      570px
     );
 
   min-height:
     clamp(
-      58px,
-      10vh,
-      82px
+      55px,
+      9vh,
+      80px
     );
 
   border:
     none;
 
   border-radius:
-    18px;
+    17px;
 
   background:
     linear-gradient(
@@ -774,7 +1130,7 @@ select {
 
   font-size:
     clamp(
-      1.3rem,
+      1.25rem,
       5vw,
       2rem
     );
@@ -785,50 +1141,43 @@ select {
   cursor:
     pointer;
 
+  touch-action:
+    manipulation;
+
   box-shadow:
-    0 10px 25px
-      rgba(0,0,0,.35),
+    0 10px 26px
+      rgba(0,0,0,.4),
 
     0 7px 20px
       rgba(255,181,46,.2);
-
-  touch-action:
-    manipulation;
 }
 
 #rollButton:active {
-
   transform:
     scale(.975)
     translateY(2px);
 }
 
-#rollButton:disabled {
 
-  opacity:
-    .6;
-
-  cursor:
-    wait;
-}
-
-/* ==========================================
-   LANDSCAPE
-========================================== */
+/* =========================================================
+   LANDSCAPE / SHORT SCREENS
+========================================================= */
 
 @media (
   orientation: landscape
 ) and (max-height: 520px) {
 
   .app {
-    padding-top: 4px;
+    padding-top:
+      3px;
 
-    gap: 3px;
+    gap:
+      3px;
   }
 
   h1 {
     font-size:
-      1.25rem;
+      1.15rem;
 
     margin-bottom:
       2px;
@@ -839,59 +1188,84 @@ select {
       2px;
   }
 
-  .stage {
-    padding:
+  .auto-controls {
+    margin-top:
       2px;
   }
 
   #rollButton {
     min-height:
-      45px;
+      43px;
 
     font-size:
-      1.15rem;
+      1.1rem;
 
     border-radius:
       11px;
   }
 
-  .die {
+  .dice.count-1 .die {
     --size:
       min(
-        24vh,
-        24vw,
-        150px
+        38vh,
+        35vw,
+        260px
+      );
+  }
+
+  .dice.count-2 {
+    flex-direction:
+      row;
+  }
+
+  .dice.count-2 .die {
+    --size:
+      min(
+        32vh,
+        35vw,
+        250px
       );
   }
 }
 
-/* ==========================================
-   SHORT PORTRAIT
-========================================== */
+
+/* =========================================================
+   VERY SHORT PHONES
+========================================================= */
 
 @media (
-  orientation: portrait
-) and (max-height: 650px) {
+  max-height: 650px
+) and (orientation: portrait) {
 
   h1 {
     font-size:
-      1.35rem;
+      1.25rem;
   }
 
-  .die {
-    --size:
-      min(
-        29vw,
-        25vh,
-        190px
-      );
+  .small-button {
+    padding:
+      5px 8px;
+
+    font-size:
+      .7rem;
+  }
+
+  .die-control {
+    padding:
+      3px 5px;
+  }
+
+  .auto-controls {
+    margin-top:
+      2px;
   }
 
   #rollButton {
     min-height:
-      56px;
+      53px;
   }
 }
+
 </style>
 </head>
 
@@ -900,73 +1274,156 @@ select {
 
 <main class="app">
 
-<header>
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
 
-  <h1>🎲 Dice Roller</h1>
+  <header>
 
-  <div class="top-controls">
+    <h1>🎲 Dice Roller</h1>
+
+    <div class="top-controls">
+
+      <button
+        id="addDie"
+        class="small-button"
+        type="button">
+        ＋ Add Die
+      </button>
+
+      <button
+        id="removeDie"
+        class="small-button"
+        type="button">
+        − Remove Die
+      </button>
+
+      <button
+        id="skinButton"
+        class="small-button"
+        type="button">
+        🎨 Random Skin
+      </button>
+
+    </div>
+
+
+    <div
+      id="diceControls"
+      class="dice-controls">
+    </div>
+
+
+    <!-- AUTO ROLL -->
+
+    <div class="auto-controls">
+
+      <span class="auto-label">
+        AUTO
+      </span>
+
+      <select
+        id="intervalSelect">
+
+        <option value="2">
+          2 sec
+        </option>
+
+        <option value="3" selected>
+          3 sec
+        </option>
+
+        <option value="4">
+          4 sec
+        </option>
+
+        <option value="5">
+          5 sec
+        </option>
+
+        <option value="10">
+          10 sec
+        </option>
+
+      </select>
+
+
+      <button
+        id="autoButton"
+        class="small-button"
+        type="button">
+
+        ▶ Start Auto
+
+      </button>
+
+
+      <button
+        id="pauseButton"
+        class="small-button"
+        type="button"
+        disabled>
+
+        ⏸ Pause
+
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <!-- =====================================================
+       DICE STAGE
+  ====================================================== -->
+
+  <section class="stage">
+
+    <div
+      id="dice"
+      class="dice">
+    </div>
+
+
+    <!-- PASS THE BALL -->
+
+    <div
+      id="passMessage"
+      class="pass-message">
+
+      <div class="pass-message-inner">
+        PASS THE BALL
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       ROLL
+  ====================================================== -->
+
+  <div class="bottom">
 
     <button
-      id="addDie"
-      class="small-button"
+      id="rollButton"
       type="button">
-      ＋ Add Die
-    </button>
 
-    <button
-      id="removeDie"
-      class="small-button"
-      type="button">
-      − Remove Die
-    </button>
+      ROLL 🎲
 
-    <button
-      id="skinButton"
-      class="small-button"
-      type="button">
-      🎨 Random Skin
     </button>
 
   </div>
-
-  <div
-    id="diceControls"
-    class="dice-controls">
-  </div>
-
-</header>
-
-
-<section class="stage">
-
-  <div
-    id="dice"
-    class="dice">
-  </div>
-
-</section>
-
-
-<div class="bottom">
-
-  <button
-    id="rollButton"
-    type="button">
-
-    ROLL 🎲
-
-  </button>
-
-</div>
 
 </main>
 
 
 <script>
 
-/* ==========================================
+/* =========================================================
    ELEMENTS
-========================================== */
+========================================================= */
 
 const diceContainer =
   document.getElementById(
@@ -998,10 +1455,30 @@ const skinButton =
     "skinButton"
   );
 
+const intervalSelect =
+  document.getElementById(
+    "intervalSelect"
+  );
 
-/* ==========================================
+const autoButton =
+  document.getElementById(
+    "autoButton"
+  );
+
+const pauseButton =
+  document.getElementById(
+    "pauseButton"
+  );
+
+const passMessage =
+  document.getElementById(
+    "passMessage"
+  );
+
+
+/* =========================================================
    SETTINGS
-========================================== */
+========================================================= */
 
 const SIDE_OPTIONS = [
   2,
@@ -1015,15 +1492,14 @@ const SIDE_OPTIONS = [
 ];
 
 const MAX_DICE = 10;
-
 const MIN_DICE = 1;
 
 
 /*
-  Each die has its own sides.
+  Every die gets its own side count.
 
-  Default:
-  D6 + D6
+  Default is D6 + D6 for your
+  Saran Wrap game.
 */
 
 let diceSettings = [
@@ -1031,48 +1507,72 @@ let diceSettings = [
   6
 ];
 
+
+/*
+  The actual current values.
+
+  IMPORTANT:
+
+  These values are selected BEFORE
+  an animation starts.
+
+  They do NOT change after landing.
+*/
+
+let currentValues = [
+  1,
+  1
+];
+
+
 let rolling = false;
 
+let autoRunning = false;
 
-/* ==========================================
-   PIP MAP
-========================================== */
+let paused = false;
+
+let autoTimer = null;
+
+
+/* =========================================================
+   SIX-SIDED PIP MAP
+========================================================= */
 
 const pipMap = {
 
   1: [4],
 
-  2: [0,8],
+  2: [0, 8],
 
-  3: [0,4,8],
+  3: [0, 4, 8],
 
-  4: [0,2,6,8],
+  4: [0, 2, 6, 8],
 
-  5: [0,2,4,6,8],
+  5: [0, 2, 4, 6, 8],
 
-  6: [0,2,3,5,6,8]
+  6: [0, 2, 3, 5, 6, 8]
 
 };
 
 
-/* ==========================================
+/* =========================================================
    RANDOM NUMBER
-========================================== */
+========================================================= */
 
-function randomNumber(
-  max
-) {
+function randomNumber(max) {
 
-  return Math.floor(
-    Math.random() * max
-  ) + 1;
+  return (
+    Math.floor(
+      Math.random() * max
+    ) + 1
+  );
 
 }
 
 
-/* ==========================================
-   SIDE SELECTOR
-========================================== */
+/* =========================================================
+   CREATE SIDE SELECT
+========================================================= */
 
 function createSideSelect(
   index,
@@ -1157,6 +1657,21 @@ function createSideSelect(
         );
 
 
+      /*
+        Give the newly configured
+        die a valid current value.
+      */
+
+      currentValues[
+        dieIndex
+      ] =
+        randomNumber(
+          diceSettings[
+            dieIndex
+          ]
+        );
+
+
       createDice();
 
     }
@@ -1177,9 +1692,9 @@ function createSideSelect(
 }
 
 
-/* ==========================================
+/* =========================================================
    RENDER CONTROLS
-========================================== */
+========================================================= */
 
 function renderControls() {
 
@@ -1203,9 +1718,9 @@ function renderControls() {
 }
 
 
-/* ==========================================
+/* =========================================================
    CREATE DIE
-========================================== */
+========================================================= */
 
 function createDie(
   sides,
@@ -1221,6 +1736,10 @@ function createDie(
   die.className =
     "die";
 
+
+  /*
+    Six-sided dice get huge pips.
+  */
 
   if (
     sides === 6
@@ -1262,6 +1781,10 @@ function createDie(
 
   }
 
+  /*
+    Other dice display their number.
+  */
+
   else {
 
     die.appendChild(
@@ -1295,9 +1818,9 @@ function createDie(
 }
 
 
-/* ==========================================
+/* =========================================================
    SET PIPS
-========================================== */
+========================================================= */
 
 function setPips(
   die,
@@ -1328,9 +1851,9 @@ function setPips(
 }
 
 
-/* ==========================================
+/* =========================================================
    SET DIE VALUE
-========================================== */
+========================================================= */
 
 function setDieValue(
   die,
@@ -1359,24 +1882,25 @@ function setDieValue(
 
 
   /*
-    Remove old number text.
+    Remove only the old number.
   */
 
-  [...die.childNodes]
-    .forEach(
-      node => {
+  [
+    ...die.childNodes
+  ].forEach(
+    node => {
 
-        if (
-          node.nodeType ===
-          Node.TEXT_NODE
-        ) {
+      if (
+        node.nodeType ===
+        Node.TEXT_NODE
+      ) {
 
-          node.remove();
-
-        }
+        node.remove();
 
       }
-    );
+
+    }
+  );
 
 
   die.insertBefore(
@@ -1389,9 +1913,41 @@ function setDieValue(
 }
 
 
-/* ==========================================
+/* =========================================================
+   UPDATE DICE COUNT CLASS
+========================================================= */
+
+function updateCountClass() {
+
+  const classes = [
+    "count-1",
+    "count-2",
+    "count-3",
+    "count-4",
+    "count-5",
+    "count-6",
+    "count-7",
+    "count-8",
+    "count-9",
+    "count-10"
+  ];
+
+
+  diceContainer.classList.remove(
+    ...classes
+  );
+
+
+  diceContainer.classList.add(
+    `count-${diceSettings.length}`
+  );
+
+}
+
+
+/* =========================================================
    CREATE DICE
-========================================== */
+========================================================= */
 
 function createDice() {
 
@@ -1399,59 +1955,47 @@ function createDice() {
     "";
 
 
-  const count =
-    diceSettings.length;
+  updateCountClass();
 
 
-  diceContainer.classList.remove(
-    "four-plus",
-    "six-plus",
-    "eight-plus"
-  );
+  /*
+    Make sure every die has
+    a valid current value.
+  */
+
+  currentValues =
+    diceSettings.map(
+      (sides, index) => {
+
+        const old =
+          currentValues[index];
 
 
-  if (
-    count >= 4
-  ) {
+        if (
+          old >= 1 &&
+          old <= sides
+        ) {
 
-    diceContainer.classList.add(
-      "four-plus"
+          return old;
+
+        }
+
+
+        return randomNumber(
+          sides
+        );
+
+      }
     );
-
-  }
-
-
-  if (
-    count >= 6
-  ) {
-
-    diceContainer.classList.add(
-      "six-plus"
-    );
-
-  }
-
-
-  if (
-    count >= 8
-  ) {
-
-    diceContainer.classList.add(
-      "eight-plus"
-    );
-
-  }
 
 
   diceSettings.forEach(
-    (sides) => {
+    (sides, index) => {
 
       const die =
         createDie(
           sides,
-          randomNumber(
-            sides
-          )
+          currentValues[index]
         );
 
 
@@ -1465,9 +2009,9 @@ function createDice() {
 }
 
 
-/* ==========================================
+/* =========================================================
    ADD DIE
-========================================== */
+========================================================= */
 
 addDieButton.addEventListener(
   "click",
@@ -1488,6 +2032,11 @@ addDieButton.addEventListener(
     );
 
 
+    currentValues.push(
+      1
+    );
+
+
     renderControls();
 
     createDice();
@@ -1496,9 +2045,9 @@ addDieButton.addEventListener(
 );
 
 
-/* ==========================================
+/* =========================================================
    REMOVE DIE
-========================================== */
+========================================================= */
 
 removeDieButton.addEventListener(
   "click",
@@ -1516,6 +2065,8 @@ removeDieButton.addEventListener(
 
     diceSettings.pop();
 
+    currentValues.pop();
+
 
     renderControls();
 
@@ -1525,11 +2076,125 @@ removeDieButton.addEventListener(
 );
 
 
-/* ==========================================
-   ROLL
-========================================== */
+/* =========================================================
+   CHOOSE FINAL RESULTS FIRST
+========================================================= */
+
+function chooseResults() {
+
+  return diceSettings.map(
+    sides =>
+      randomNumber(
+        sides
+      )
+  );
+
+}
+
+
+/* =========================================================
+   CHECK DOUBLES
+========================================================= */
+
+function isDoubles(
+  results
+) {
+
+  /*
+    Doubles only make sense
+    when exactly two dice exist.
+  */
+
+  if (
+    diceSettings.length !== 2
+  ) {
+
+    return false;
+
+  }
+
+
+  /*
+    D6 + D6 -> normal doubles.
+
+    If you use D6 + D12, a matching
+    number is still considered a
+    match, e.g. 4 + 4.
+  */
+
+  return (
+    results[0] ===
+    results[1]
+  );
+
+}
+
+
+/* =========================================================
+   SHOW PASS MESSAGE
+========================================================= */
+
+function showPassMessage() {
+
+  passMessage.classList.add(
+    "visible"
+  );
+
+}
+
+
+/* =========================================================
+   HIDE PASS MESSAGE
+========================================================= */
+
+function hidePassMessage() {
+
+  passMessage.classList.remove(
+    "visible"
+  );
+
+}
+
+
+/* =========================================================
+   GET ANIMATION CLASS
+========================================================= */
+
+function animationClass(
+  index
+) {
+
+  if (
+    index % 3 === 0
+  ) {
+
+    return "roll-left";
+
+  }
+
+  if (
+    index % 3 === 1
+  ) {
+
+    return "roll-right";
+
+  }
+
+  return "roll-third";
+
+}
+
+
+/* =========================================================
+   ROLL DICE
+========================================================= */
 
 function rollDice() {
+
+  /*
+    Never start another roll while
+    one is already happening.
+  */
 
   if (
     rolling
@@ -1540,22 +2205,50 @@ function rollDice() {
   }
 
 
+  /*
+    If the user manually rolls while
+    the PASS message is showing,
+    don't allow it.
+  */
+
+  if (
+    passMessage.classList.contains(
+      "visible"
+    )
+  ) {
+
+    return;
+
+  }
+
+
   rolling = true;
 
-  rollButton.disabled =
-    true;
 
+  /*
+    ========================================================
+    CRITICAL PART
+
+    THE FINAL RESULTS ARE CHOSEN RIGHT HERE.
+
+    They will NOT be changed again after
+    the animation finishes.
+    ========================================================
+  */
+
+  const finalResults =
+    chooseResults();
+
+
+  /*
+    Remove previous animation classes.
+  */
 
   const dice =
     [
       ...diceContainer.children
     ];
 
-
-  /*
-    Give every die its own
-    independent trajectory.
-  */
 
   dice.forEach(
     (die, index) => {
@@ -1569,103 +2262,39 @@ function rollDice() {
 
 
       /*
-        Force animation restart.
+        Force the browser to restart
+        the animation.
       */
 
       void die.offsetWidth;
 
 
-      /*
-        Pick trajectory based on die.
-      */
-
-      if (
-        index % 3 === 0
-      ) {
-
-        die.classList.add(
-          "roll-left"
-        );
-
-      }
-
-      else if (
-        index % 3 === 1
-      ) {
-
-        die.classList.add(
-          "roll-right"
-        );
-
-      }
-
-      else {
-
-        die.classList.add(
-          "roll-third"
-        );
-
-      }
-
+      die.classList.add(
+        animationClass(
+          index
+        )
+      );
 
       die.classList.add(
         "rolling"
       );
-
-
-      /*
-        Rapidly change the face
-        while it is traveling.
-      */
-
-      const sides =
-        diceSettings[index];
-
-
-      let ticks = 0;
-
-
-      const interval =
-        setInterval(
-          () => {
-
-            const value =
-              randomNumber(
-                sides
-              );
-
-
-            setDieValue(
-              die,
-              sides,
-              value
-            );
-
-
-            ticks++;
-
-
-            if (
-              ticks >= 11
-            ) {
-
-              clearInterval(
-                interval
-              );
-
-            }
-
-          },
-          70
-        );
 
     }
   );
 
 
   /*
-    Final landing.
+    While the dice are physically
+    rolling, we DO NOT change their
+    displayed values.
+
+    They already have the results
+    from the previous completed roll.
+
+    When they land, we reveal the
+    predetermined result.
   */
+
 
   setTimeout(
     () => {
@@ -1673,21 +2302,27 @@ function rollDice() {
       dice.forEach(
         (die, index) => {
 
+          const result =
+            finalResults[index];
+
           const sides =
             diceSettings[index];
 
 
-          const finalValue =
-            randomNumber(
-              sides
-            );
-
+          /*
+            This is the ONE and ONLY
+            final result assignment.
+          */
 
           setDieValue(
             die,
             sides,
-            finalValue
+            result
           );
+
+
+          currentValues[index] =
+            result;
 
 
           die.classList.remove(
@@ -1703,25 +2338,415 @@ function rollDice() {
 
       rolling = false;
 
-      rollButton.disabled =
-        false;
+
+      /*
+        Now check doubles using the
+        exact values that are sitting
+        on the dice.
+      */
+
+      if (
+        isDoubles(
+          finalResults
+        )
+      ) {
+
+        handleDoubles();
+
+      }
+      else {
+
+        scheduleNextAutoRoll();
+
+      }
 
     },
-    1160
+    1250
   );
 
 }
 
 
-rollButton.addEventListener(
+/* =========================================================
+   HANDLE DOUBLES
+========================================================= */
+
+function handleDoubles() {
+
+  /*
+    Only automatic play gets the
+    five-second pass-the-ball pause.
+  */
+
+  if (
+    !autoRunning
+  ) {
+
+    return;
+
+  }
+
+
+  showPassMessage();
+
+
+  /*
+    Stop any previously scheduled
+    automatic roll.
+  */
+
+  clearTimeout(
+    autoTimer
+  );
+
+
+  /*
+    Exactly five seconds.
+  */
+
+  autoTimer =
+    setTimeout(
+      () => {
+
+        hidePassMessage();
+
+
+        /*
+          If the user pressed PAUSE
+          during the five seconds,
+          stay paused.
+        */
+
+        if (
+          paused
+        ) {
+
+          return;
+
+        }
+
+
+        scheduleNextAutoRoll();
+
+      },
+      5000
+    );
+
+}
+
+
+/* =========================================================
+   AUTO ROLL
+========================================================= */
+
+function scheduleNextAutoRoll() {
+
+  clearTimeout(
+    autoTimer
+  );
+
+
+  if (
+    !autoRunning ||
+    paused
+  ) {
+
+    return;
+
+  }
+
+
+  const seconds =
+    Number(
+      intervalSelect.value
+    );
+
+
+  autoTimer =
+    setTimeout(
+      () => {
+
+        if (
+          !autoRunning ||
+          paused
+        ) {
+
+          return;
+
+        }
+
+
+        rollDice();
+
+      },
+      seconds * 1000
+    );
+
+}
+
+
+/* =========================================================
+   START AUTO
+========================================================= */
+
+function startAuto() {
+
+  if (
+    autoRunning
+  ) {
+
+    return;
+
+  }
+
+
+  autoRunning =
+    true;
+
+  paused =
+    false;
+
+
+  autoButton.textContent =
+    "⏹ Stop Auto";
+
+  autoButton.classList.add(
+    "active"
+  );
+
+
+  pauseButton.disabled =
+    false;
+
+  pauseButton.textContent =
+    "⏸ Pause";
+
+
+  /*
+    Start immediately rather than
+    making everyone wait three seconds
+    for the first roll.
+  */
+
+  rollDice();
+
+}
+
+
+/* =========================================================
+   STOP AUTO
+========================================================= */
+
+function stopAuto() {
+
+  autoRunning =
+    false;
+
+  paused =
+    false;
+
+
+  clearTimeout(
+    autoTimer
+  );
+
+
+  autoTimer =
+    null;
+
+
+  autoButton.textContent =
+    "▶ Start Auto";
+
+  autoButton.classList.remove(
+    "active"
+  );
+
+
+  pauseButton.disabled =
+    true;
+
+  pauseButton.textContent =
+    "⏸ Pause";
+
+
+  hidePassMessage();
+
+}
+
+
+/* =========================================================
+   AUTO BUTTON
+========================================================= */
+
+autoButton.addEventListener(
   "click",
-  rollDice
+  () => {
+
+    if (
+      autoRunning
+    ) {
+
+      stopAuto();
+
+    }
+
+    else {
+
+      startAuto();
+
+    }
+
+  }
 );
 
 
-/* ==========================================
+/* =========================================================
+   PAUSE / RESUME
+========================================================= */
+
+pauseButton.addEventListener(
+  "click",
+  () => {
+
+    if (
+      !autoRunning
+    ) {
+
+      return;
+
+    }
+
+
+    if (
+      paused
+    ) {
+
+      /*
+        RESUME
+      */
+
+      paused =
+        false;
+
+
+      pauseButton.textContent =
+        "⏸ Pause";
+
+
+      /*
+        If PASS THE BALL is not
+        currently showing, resume
+        normal timing.
+      */
+
+      if (
+        !passMessage.classList.contains(
+          "visible"
+        )
+      ) {
+
+        scheduleNextAutoRoll();
+
+      }
+
+    }
+
+    else {
+
+      /*
+        PAUSE
+      */
+
+      paused =
+        true;
+
+
+      clearTimeout(
+        autoTimer
+      );
+
+
+      autoTimer =
+        null;
+
+
+      pauseButton.textContent =
+        "▶ Resume";
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   CHANGE INTERVAL
+========================================================= */
+
+intervalSelect.addEventListener(
+  "change",
+  () => {
+
+    /*
+      If auto is currently running
+      and isn't paused, restart the
+      waiting period using the new
+      interval.
+    */
+
+    if (
+      autoRunning &&
+      !paused &&
+      !rolling &&
+      !passMessage.classList.contains(
+        "visible"
+      )
+    ) {
+
+      scheduleNextAutoRoll();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   MANUAL ROLL
+========================================================= */
+
+rollButton.addEventListener(
+  "click",
+  () => {
+
+    /*
+      Manual ROLL works whether or
+      not Auto is running.
+
+      If Auto is running, the normal
+      timer continues afterward.
+    */
+
+    if (
+      !rolling &&
+      !paused &&
+      !passMessage.classList.contains(
+        "visible"
+      )
+    ) {
+
+      rollDice();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
    RANDOM SKIN
-========================================== */
+========================================================= */
 
 function randomSkin() {
 
@@ -1732,12 +2757,11 @@ function randomSkin() {
 
 
   /*
-    More than half the skins
-    are dark.
+    Favor darker themes.
   */
 
   const dark =
-    Math.random() < .62;
+    Math.random() < .65;
 
 
   let dieBg;
@@ -1752,7 +2776,7 @@ function randomSkin() {
 
     const light =
       7 +
-      Math.random() * 21;
+      Math.random() * 20;
 
 
     dieBg =
@@ -1774,8 +2798,8 @@ function randomSkin() {
     pip =
       `hsl(
         ${(hue + 150) % 360},
-        85%,
-        93%
+        90%,
+        94%
       )`;
 
 
@@ -1807,7 +2831,10 @@ function randomSkin() {
       `hsl(
         ${(hue + 25) % 360},
         65%,
-        ${Math.min(97, light + 10)}%
+        ${Math.min(
+          97,
+          light + 10
+        )}%
       )`;
 
 
@@ -1815,7 +2842,7 @@ function randomSkin() {
       `hsl(
         ${(hue + 170) % 360},
         60%,
-        12%
+        10%
       )`;
 
 
@@ -1941,21 +2968,45 @@ function randomSkin() {
 
   document.documentElement.style.setProperty(
     "--bg1",
+
     dark
-      ? `hsl(${hue}, 28%, 15%)`
-      : `hsl(${hue}, 22%, 23%)`
+      ? `hsl(
+          ${hue},
+          28%,
+          15%
+        )`
+
+      : `hsl(
+          ${hue},
+          22%,
+          23%
+        )`
   );
 
 
   document.documentElement.style.setProperty(
     "--bg2",
+
     dark
-      ? `hsl(${hue}, 30%, 4%)`
-      : `hsl(${hue}, 24%, 8%)`
+      ? `hsl(
+          ${hue},
+          30%,
+          4%
+        )`
+
+      : `hsl(
+          ${hue},
+          24%,
+          8%
+        )`
   );
 
 }
 
+
+/* =========================================================
+   SKIN BUTTON
+========================================================= */
 
 skinButton.addEventListener(
   "click",
@@ -1963,9 +3014,9 @@ skinButton.addEventListener(
 );
 
 
-/* ==========================================
+/* =========================================================
    INITIALIZE
-========================================== */
+========================================================= */
 
 randomSkin();
 
