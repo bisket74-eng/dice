@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#10131a">
+  <title>Dice Roller</title>
+
+  <style>
+    :root {
+      --bg: #0d1016;
+      --panel: #191e27;
+      --border: #303846;
+      --text: #ffffff;
+      --muted: #aab2c0;
+      --accent: #ffb52e;
+      --accent-dark: #d98d00;
+      --die: #fffdf8;
+      --pip: #171a20;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(
+          circle at 50% 10%,
+          #293140 0%,
+          #151922 40%,
+          #080a0e 100%
+        );
+      color: var(--text);
+      font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      display: flex;
+      justify-content: center;
+    }
+
+    .app {
+      width: min(100%, 1000px);
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---------------- HEADER ---------------- */
+
+    header {
+      text-align: center;
+    }
+
+    h1 {
+      margin: 4px 0 18px;
+      font-size: clamp(2rem, 7vw, 3.5rem);
+      letter-spacing: -0.04em;
+    }
+
+    /* ---------------- CONTROLS ---------------- */
+
+    .controls {
+      width: min(100%, 650px);
+      margin: 0 auto;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+
+      background: rgba(25, 30, 39, 0.95);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .control label {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    select {
+      appearance: none;
+
+      background: #0d1118;
+      color: white;
+
+      border: 1px solid #414b5d;
+      border-radius: 11px;
+
+      padding: 10px 34px 10px 13px;
+
+      font-size: 1rem;
+      font-weight: 800;
+
+      cursor: pointer;
+    }
+
+    /* ---------------- DICE AREA ---------------- */
+
+    .stage {
+      flex: 1;
+
+      min-height: 430px;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      padding: 35px 5px;
+    }
+
+    .dice {
+      width: 100%;
+
+      display: flex;
+      flex-wrap: wrap;
+
+      justify-content: center;
+      align-items: center;
+
+      gap: clamp(12px, 3vw, 28px);
+    }
+
+    /* ---------------- DIE ---------------- */
+
+    .die {
+      --size: min(38vw, 280px);
+
+      width: var(--size);
+      height: var(--size);
+
+      min-width: 80px;
+      min-height: 80px;
+
+      max-width: 280px;
+      max-height: 280px;
+
+      background: var(--die);
+
+      border-radius: clamp(15px, 3vw, 30px);
+
+      box-shadow:
+        0 20px 45px rgba(0, 0, 0, 0.45),
+        inset 0 -6px 0 rgba(0, 0, 0, 0.08);
+
+      position: relative;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: clamp(2rem, 10vw, 5rem);
+      font-weight: 950;
+
+      color: var(--pip);
+
+      user-select: none;
+
+      transform: scale(1);
+    }
+
+    /*
+      Standard six-sided dice use actual pips.
+      Other-sided dice display the number.
+    */
+
+    .die.pips {
+      display: grid;
+
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+
+      padding: 13%;
+    }
+
+    .pip {
+      width: 42%;
+      aspect-ratio: 1;
+
+      border-radius: 50%;
+
+      background: var(--pip);
+
+      place-self: center;
+
+      opacity: 0;
+
+      transform: scale(0.35);
+
+      transition:
+        opacity 0.08s,
+        transform 0.08s;
+    }
+
+    .pip.on {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* ---------------- ROLL ANIMATION ---------------- */
+
+    .rolling {
+      animation: tumble 0.75s cubic-bezier(.2, .8, .25, 1);
+    }
+
+    @keyframes tumble {
+
+      0% {
+        transform:
+          rotate(0deg)
+          scale(0.78);
+      }
+
+      15% {
+        transform:
+          rotate(18deg)
+          scale(1.08);
+      }
+
+      30% {
+        transform:
+          rotate(-24deg)
+          scale(0.92);
+      }
+
+      45% {
+        transform:
+          rotate(20deg)
+          scale(1.06);
+      }
+
+      60% {
+        transform:
+          rotate(-17deg)
+          scale(0.96);
+      }
+
+      75% {
+        transform:
+          rotate(9deg)
+          scale(1.03);
+      }
+
+      90% {
+        transform:
+          rotate(-4deg)
+          scale(0.99);
+      }
+
+      100% {
+        transform:
+          rotate(0deg)
+          scale(1);
+      }
+    }
+
+    /* ---------------- ROLL BUTTON ---------------- */
+
+    .roll-area {
+      display: flex;
+      justify-content: center;
+
+      padding-bottom: 10px;
+    }
+
+    #rollButton {
+      border: none;
+
+      border-radius: 18px;
+
+      background:
+        linear-gradient(
+          180deg,
+          #ffd36d,
+          var(--accent)
+        );
+
+      color: #17120a;
+
+      font-size: clamp(1.25rem, 5vw, 1.6rem);
+      font-weight: 950;
+
+      padding: 17px 48px;
+
+      min-height: 64px;
+
+      cursor: pointer;
+
+      box-shadow:
+        0 10px 28px rgba(255, 181, 46, 0.25);
+
+      touch-action: manipulation;
+
+      transition:
+        transform 0.1s,
+        box-shadow 0.1s;
+    }
+
+    #rollButton:active {
+      transform: translateY(2px) scale(0.97);
+
+      box-shadow:
+        0 5px 15px rgba(255, 181, 46, 0.18);
+    }
+
+    #rollButton:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    /* ---------------- MOBILE ---------------- */
+
+    @media (max-width: 600px) {
+
+      .app {
+        padding: 14px;
+      }
+
+      .stage {
+        min-height: 350px;
+      }
+
+      .die {
+        --size: min(39vw, 175px);
+      }
+
+      .controls {
+        gap: 10px;
+      }
+    }
+
+    /* ---------------- MANY DICE ---------------- */
+
+    /*
+      When there are many dice, automatically make
+      them smaller so everything remains visible.
+    */
+
+    .dice.many .die {
+      --size: min(18vw, 150px);
+    }
+
+    .dice.very-many .die {
+      --size: min(14vw, 115px);
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="app">
+
+    <header>
+      <h1>🎲 Dice Roller</h1>
+
+      <div class="controls">
+
+        <div class="control">
+          <label for="diceCount">Dice</label>
+
+          <select id="diceCount">
+            <option value="1">1</option>
+            <option value="2" selected>2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+          </select>
+        </div>
+
+        <div class="control">
+          <label for="sides">Sides</label>
+
+          <select id="sides">
+            <option value="2">2</option>
+            <option value="4">4</option>
+            <option value="6" selected>6</option>
+            <option value="8">8</option>
+            <option value="10">10</option>
+            <option value="12">12</option>
+            <option value="20">20</option>
+            <option value="100">100</option>
+          </select>
+        </div>
+
+      </div>
+    </header>
+
+
+    <section class="stage">
+
+      <div
+        id="dice"
+        class="dice"
+        aria-live="polite"
+      ></div>
+
+    </section>
+
+
+    <div class="roll-area">
+
+      <button
+        id="rollButton"
+        type="button"
+      >
+        ROLL 🎲
+      </button>
+
+    </div>
+
+  </main>
+
+
+  <script>
+
+    const diceContainer =
+      document.getElementById("dice");
+
+    const diceCount =
+      document.getElementById("diceCount");
+
+    const sidesSelect =
+      document.getElementById("sides");
+
+    const rollButton =
+      document.getElementById("rollButton");
+
+
+    let rolling = false;
+
+
+    /*
+      Pip positions for a standard six-sided die.
+
+      Positions:
+
+      0 1 2
+      3 4 5
+      6 7 8
+    */
+
+    const pipMap = {
+
+      1: [4],
+
+      2: [0, 8],
+
+      3: [0, 4, 8],
+
+      4: [0, 2, 6, 8],
+
+      5: [0, 2, 4, 6, 8],
+
+      6: [0, 2, 3, 5, 6, 8]
+
+    };
+
+
+    function randomNumber(max) {
+
+      return Math.floor(
+        Math.random() * max
+      ) + 1;
+
+    }
+
+
+    /*
+      Create one die.
+    */
+
+    function createDie(
+      sides,
+      value = 1
+    ) {
+
+      const die =
+        document.createElement("div");
+
+      die.className = "die";
+
+      /*
+        Six-sided dice get real-looking pips.
+      */
+
+      if (sides === 6) {
+
+        die.classList.add("pips");
+
+        for (let i = 0; i < 9; i++) {
+
+          const pip =
+            document.createElement("span");
+
+          pip.className = "pip";
+
+          pip.dataset.position = i;
+
+          die.appendChild(pip);
+
+        }
+
+        setPips(die, value);
+
+      }
+
+      /*
+        All other dice simply show their number.
+      */
+
+      else {
+
+        die.textContent = value;
+
+      }
+
+      return die;
+
+    }
+
+
+    /*
+      Update a six-sided die's pips.
+    */
+
+    function setPips(
+      die,
+      value
+    ) {
+
+      const positions =
+        pipMap[value] || [];
+
+      const pips =
+        die.querySelectorAll(".pip");
+
+      pips.forEach(
+        (pip, index) => {
+
+          pip.classList.toggle(
+            "on",
+            positions.includes(index)
+          );
+
+        }
+      );
+
+    }
+
+
+    /*
+      Change the displayed value.
+    */
+
+    function setDieValue(
+      die,
+      sides,
+      value
+    ) {
+
+      if (sides === 6) {
+
+        setPips(
+          die,
+          value
+        );
+
+      }
+
+      else {
+
+        die.textContent = value;
+
+      }
+
+    }
+
+
+    /*
+      Build the correct number of dice.
+    */
+
+    function createDice() {
+
+      const count =
+        Number(diceCount.value);
+
+      const sides =
+        Number(sidesSelect.value);
+
+      diceContainer.innerHTML = "";
+
+      diceContainer.classList.remove(
+        "many",
+        "very-many"
+      );
+
+
+      if (count >= 5) {
+
+        diceContainer.classList.add(
+          "many"
+        );
+
+      }
+
+      if (count >= 8) {
+
+        diceContainer.classList.add(
+          "very-many"
+        );
+
+      }
+
+
+      for (
+        let i = 0;
+        i < count;
+        i++
+      ) {
+
+        const die =
+          createDie(
+            sides,
+            randomNumber(sides)
+          );
+
+        diceContainer.appendChild(
+          die
+        );
+
+      }
+
+    }
+
+
+    /*
+      Roll all dice.
+    */
+
+    function rollDice() {
+
+      if (rolling) return;
+
+      rolling = true;
+
+      rollButton.disabled = true;
+
+
+      const count =
+        Number(diceCount.value);
+
+      const sides =
+        Number(sidesSelect.value);
+
+      const dice =
+        [...diceContainer.children];
+
+
+      /*
+        Start the animation.
+      */
+
+      dice.forEach(
+        (die, index) => {
+
+          die.classList.remove(
+            "rolling"
+          );
+
+          /*
+            Force the browser to restart
+            the animation every roll.
+          */
+
+          void die.offsetWidth;
+
+          die.classList.add(
+            "rolling"
+          );
+
+
+          /*
+            Rapidly change the numbers
+            during the animation.
+          */
+
+          let ticks = 0;
+
+          const interval =
+            setInterval(
+              () => {
+
+                const temporaryValue =
+                  randomNumber(sides);
+
+                setDieValue(
+                  die,
+                  sides,
+                  temporaryValue
+                );
+
+                ticks++;
+
+                if (ticks >= 8) {
+
+                  clearInterval(
+                    interval
+                  );
+
+                }
+
+              },
+              75
+            );
+
+        }
+      );
+
+
+      /*
+        Final result.
+      */
+
+      setTimeout(
+        () => {
+
+          dice.forEach(
+            die => {
+
+              const finalValue =
+                randomNumber(sides);
+
+              setDieValue(
+                die,
+                sides,
+                finalValue
+              );
+
+              die.classList.remove(
+                "rolling"
+              );
+
+            }
+          );
+
+
+          rolling = false;
+
+          rollButton.disabled = false;
+
+        },
+        760
+      );
+
+    }
+
+
+    /*
+      Changing either setting immediately
+      rebuilds the dice.
+    */
+
+    diceCount.addEventListener(
+      "change",
+      createDice
+    );
+
+    sidesSelect.addEventListener(
+      "change",
+      createDice
+    );
+
+
+    rollButton.addEventListener(
+      "click",
+      rollDice
+    );
+
+
+    /*
+      Initial setup:
+      2 dice, 6 sides.
+    */
+
+    createDice();
+
+  </script>
+
+</body>
+</html>
