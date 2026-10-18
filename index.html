@@ -48,7 +48,7 @@ select{
 .auto-controls{margin-top:4px}
 
 .stage{
- position:relative;min-height:0;overflow:hidden;display:flex;align-items:center;justify-content:center;
+ position:relative;min-height:0;overflow:visible;display:flex;align-items:center;justify-content:center;
  perspective:1400px;perspective-origin:50% 48%;
 }
 .dice{
@@ -79,7 +79,7 @@ select{
  perspective:900px;filter:drop-shadow(0 14px 18px #0007);
 }
 .coin-body{
- width:78%;height:78%;position:relative;transform-style:preserve-3d;
+ width:100%;height:100%;position:relative;transform-style:preserve-3d;
  border-radius:50%;
 }
 .coin-face{
@@ -88,13 +88,15 @@ select{
  border:clamp(5px,1vw,9px) solid var(--edge);
  box-shadow:inset 0 0 0 clamp(5px,1vw,10px,#0002),inset 0 5px 10px #fff6,0 7px 10px #0005;
  backface-visibility:hidden;
- color:var(--pip);font-weight:1000;font-size:clamp(3rem,14vw,7rem);
+ color:var(--pip);font-weight:900;font-size:calc(var(--size)*.62);line-height:1;
+ -webkit-text-stroke:calc(var(--size)*.02) currentColor;
 }
-.coin-face.back{transform:rotateY(180deg)}
+.coin-face.front{transform:translateZ(calc(var(--size)*.027))}
+.coin-rim{position:absolute;inset:0;border-radius:50%;background:var(--edge)}
+.coin-face.back{transform:rotateY(180deg) translateZ(calc(var(--size)*.027))}
 .coin-body.coin-land-1{transform:rotateY(0deg)}
 .coin-body.coin-land-2{transform:rotateY(180deg)}
 .coin-body.coin-flipping{animation:coinFlip 1.65s cubic-bezier(.12,.78,.18,1) both}
-.coin-body.coin-flipping .coin-face{visibility:hidden}
 @keyframes coinFlip{
  0%{transform:rotateY(0deg) rotateZ(-8deg) scale(.8)}
  18%{transform:rotateY(360deg) rotateZ(12deg) scale(1.04)}
@@ -242,7 +244,6 @@ select{
 <button class="small-button" id="addDie">＋ Add Die</button>
 <button class="small-button" id="removeDie">− Remove Die</button>
 <button class="small-button" id="skinButton">🎨 Random Skin</button>
-<button class="small-button" id="voiceButton" aria-pressed="false">🔇 Voice Off</button>
 </div>
 <div class="dice-controls" id="diceControls"></div>
 <div class="auto-controls">
@@ -270,7 +271,6 @@ const mainButton=document.getElementById("mainButton");
 const addDie=document.getElementById("addDie");
 const removeDie=document.getElementById("removeDie");
 const skinButton=document.getElementById("skinButton");
-const voiceButton=document.getElementById("voiceButton");
 const autoButton=document.getElementById("autoButton");
 const intervalSelect=document.getElementById("intervalSelect");
 const passMessage=document.getElementById("passMessage");
@@ -282,7 +282,7 @@ const PIPS={
 };
 
 let settings=[6,6],values=[1,1];
-let auto=false,paused=false,rolling=false,voiceEnabled=false;
+let auto=false,paused=false,rolling=false;
 let timer=null,passTimer=null,audioCtx=null;
 
 const rnd=n=>Math.floor(Math.random()*n)+1;
@@ -346,6 +346,11 @@ function makeCoin(value){
  const body=document.createElement("div");body.className=`coin-body coin-land-${value}`;
  const front=document.createElement("div");front.className="coin-face front";front.textContent="1";
  const back=document.createElement("div");back.className="coin-face back";back.textContent="2";
+ for(let k=0;k<17;k++){
+  const rim=document.createElement("div");rim.className="coin-rim";
+  rim.style.transform=`translateZ(calc(var(--size)*${((k-8)*.003).toFixed(4)}))`;
+  body.appendChild(rim);
+ }
  body.append(front,back);wrap.appendChild(body);
  return wrap;
 }
@@ -395,10 +400,12 @@ function textColor(){
  return getComputedStyle(document.documentElement).getPropertyValue("--pip").trim()||"#11151d";
 }
 
-function drawNumber(ctx,text,x,y,size){
- ctx.save();ctx.fillStyle=textColor();ctx.font=`900 ${size}px system-ui,sans-serif`;
- ctx.textAlign="center";ctx.textBaseline="middle";ctx.shadowColor="#ffffff55";ctx.shadowBlur=3;
- ctx.fillText(String(text),x,y);ctx.restore();
+function drawNumber(ctx,text,x,y,size,big=false){
+ ctx.save();ctx.fillStyle=textColor();ctx.strokeStyle=textColor();
+ ctx.font=`900 ${size}px system-ui,sans-serif`;
+ ctx.textAlign="center";ctx.textBaseline="middle";ctx.lineJoin="round";
+ ctx.lineWidth=size*(big?.07:.04);   /* outline thickens the glyphs = extra bold */
+ ctx.strokeText(String(text),x,y);ctx.fillText(String(text),x,y);ctx.restore();
 }
 
 function drawPolyDie(canvas,sides,value,phase,showNumber=true){
@@ -407,13 +414,14 @@ function drawPolyDie(canvas,sides,value,phase,showNumber=true){
  ctx.clearRect(0,0,W,H);
 
  const cx=W/2,cy=H/2;
- const r=260;
+ const r=338;       /* fills the same square as the D6 */
+ const r4=385;      /* D4 shape is narrower, so it gets a bigger radius */
  const n = sides===4?3 : sides===8?8 : sides===10?10 : sides===12?12 : sides===20?10 : sides===100?12:6;
  const rot=phase;
  const outer=roundedPolygon(ctx,cx,cy,r,n,rot);
 
  /* Drop shadow */
- ctx.save();ctx.translate(0,28);ctx.globalAlpha=.3;ctx.fillStyle="#000";
+ ctx.save();ctx.translate(0,16);ctx.globalAlpha=.3;ctx.fillStyle="#000";
  ctx.filter="blur(18px)";ctx.beginPath();
  ctx.moveTo(outer[0][0],outer[0][1]);outer.slice(1).forEach(p=>ctx.lineTo(p[0],p[1]));ctx.closePath();ctx.fill();ctx.restore();
 
@@ -427,7 +435,7 @@ function drawPolyDie(canvas,sides,value,phase,showNumber=true){
  if(sides===4){
   /* Tetrahedral D4: three visible triangular faces. The landed value is
      always large and centered on the prominent front triangle. */
-  const top=[cx,cy-r*.82],left=[cx-r*.86,cy+r*.48],right=[cx+r*.86,cy+r*.48],bottom=[cx,cy+r*.88];
+  const top=[cx,cy-r4*.82],left=[cx-r4*.86,cy+r4*.48],right=[cx+r4*.86,cy+r4*.48],bottom=[cx,cy+r4*.88];
   const faces=[
    {p:[top,left,bottom],s:-10},
    {p:[top,right,bottom],s:-2},
@@ -437,7 +445,7 @@ function drawPolyDie(canvas,sides,value,phase,showNumber=true){
    ctx.beginPath();ctx.moveTo(...f.p[0]);f.p.slice(1).forEach(p=>ctx.lineTo(...p));ctx.closePath();
    faceFill(ctx,f.p,f.s);
   });
-  if(showNumber)drawNumber(ctx,value,cx,cy+r*.10,118);
+  if(showNumber)drawNumber(ctx,value,cx,cy+r4*.10,230,true);
   ctx.save();ctx.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue("--edge").trim()||"#fff";ctx.lineWidth=8;
   ctx.beginPath();ctx.moveTo(top[0],top[1]);ctx.lineTo(bottom[0],bottom[1]);ctx.stroke();ctx.restore();
   return;
@@ -452,25 +460,23 @@ function drawPolyDie(canvas,sides,value,phase,showNumber=true){
   faceFill(ctx,[center,a,b],-16+i*2);
   const mx=(center.x+a[0]+b[0])/3,my=(center.y+a[1]+b[1])/3;
   const faceNum=((value-1+i)%sides)+1;
-  if(showNumber)drawNumber(ctx,faceNum,mx,my,Math.max(30,Math.min(58,520/n)));
+  if(showNumber)drawNumber(ctx,faceNum,mx,my,Math.max(40,Math.min(72,640/n)));
  }
 
  /* Front central face, raised above the ring. */
- ctx.beginPath();
- const front=[];
- const start=-Math.PI/2-.72;
- const count=sides===8?4:sides===12?5:sides===20?5:5;
- for(let i=0;i<count;i++){
-  const a=start+i*(1.44/(count-1));
-  front.push([cx+Math.cos(a)*145,cy+Math.sin(a)*145]);
- }
- ctx.moveTo(front[0][0],front[0][1]);front.slice(1).forEach(p=>ctx.lineTo(p[0],p[1]));
- ctx.closePath();faceFill(ctx,front,12);
- if(showNumber)drawNumber(ctx,value,cx,cy,Math.max(62,Math.min(105,700/Math.sqrt(sides))));
+ const fp=roundedPolygon(ctx,cx,cy,156,n,rot);
+ faceFill(ctx,fp,14);
 
- /* Little facet highlights make the body read as a die instead of a flat sign. */
- ctx.save();ctx.globalAlpha=.18;ctx.fillStyle="#fff";
- ctx.beginPath();ctx.arc(cx-r*.22,cy-r*.22,r*.24,0,Math.PI*2);ctx.fill();ctx.restore();
+ /* Little facet highlight (drawn before the number so it never dims it). */
+ ctx.save();ctx.globalAlpha=.14;ctx.fillStyle="#fff";
+ ctx.beginPath();ctx.arc(cx-r*.22,cy-r*.22,r*.2,0,Math.PI*2);ctx.fill();ctx.restore();
+
+ /* Big, bold number in the middle. */
+ if(showNumber){
+  const digits=String(value).length;
+  const size=digits===1?250:digits===2?205:145;
+  drawNumber(ctx,value,cx,cy+size*.03,size,true);
+ }
 
  ctx.save();ctx.fillStyle=textColor();ctx.globalAlpha=.4;ctx.font="800 24px system-ui";
  ctx.textAlign="right";ctx.textBaseline="bottom";if(showNumber)ctx.fillText(`D${sides}`,W-28,H-24);ctx.restore();
@@ -586,13 +592,8 @@ async function roll(){
  else setTimeout(showControls,520);
 }
 
-function sayPassTheBall(){
- if(!voiceEnabled||!("speechSynthesis"in window))return;
- speechSynthesis.cancel();
- const u=new SpeechSynthesisUtterance("Pass the ball");u.rate=.9;u.pitch=1;u.volume=1;speechSynthesis.speak(u);
-}
 function showPass(){
- clearTimeout(timer);clearTimeout(passTimer);passMessage.classList.add("visible");sayPassTheBall();
+ clearTimeout(timer);clearTimeout(passTimer);passMessage.classList.add("visible");
  const passDuration=Number(intervalSelect.value)*1000+1000;
  passTimer=setTimeout(()=>{passMessage.classList.remove("visible");if(auto&&!paused)roll()},passDuration);
 }
@@ -636,11 +637,6 @@ function randomSkin(){
  root.style.setProperty("--bg2",`hsl(${hue},30%,${dark?14:24}%)`);root.style.setProperty("--bg",`hsl(${hue},32%,${dark?4:9}%)`);
  root.style.setProperty("--glow",`hsla(${hue},90%,65%,${.10+Math.random()*.25})`);
 }
-voiceButton.onclick=()=>{
- voiceEnabled=!voiceEnabled;voiceButton.setAttribute("aria-pressed",String(voiceEnabled));
- voiceButton.textContent=voiceEnabled?"🔊 Voice On":"🔇 Voice Off";
- if(!voiceEnabled&&"speechSynthesis"in window)speechSynthesis.cancel();
-};
 skinButton.onclick=randomSkin;
 
 let touchStartY=null;
