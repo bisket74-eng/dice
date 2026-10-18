@@ -5,77 +5,211 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#080a0f">
 <title>Dice Roller</title>
+
 <style>
 :root{
-  --bg:#080a0f;--bg2:#171b27;--panel:#121722ee;--text:#fff;--muted:#aeb7c7;
-  --die:#f7f5ed;--die2:#fff;--pip:#11151d;--edge:#fff;--accent:#ffb82e;
-  --accent2:#ffe083;--accentText:#161006;--glow:#ffbe3c55;
+  --bg:#080a0f;
+  --bg2:#171b27;
+  --panel:#121722ee;
+  --text:#fff;
+  --muted:#aeb7c7;
+  --die:#f7f5ed;
+  --die2:#fff;
+  --pip:#11151d;
+  --edge:#fff;
+  --accent:#ffb82e;
+  --accent2:#ffe083;
+  --accentText:#161006;
+  --glow:#ffbe3c55;
 }
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
 html,body{
-  margin:0;width:100%;height:100%;min-height:100dvh;overflow:hidden;
+  margin:0;
+  width:100%;
+  height:100%;
+  min-height:100dvh;
+  overflow:hidden;
   background:var(--bg);
 }
-body:fullscreen, body:-webkit-full-screen{
-  width:100vw;height:100dvh;overflow:hidden;
+
+body:fullscreen,
+body:-webkit-full-screen{
+  width:100vw;
+  height:100dvh;
+  overflow:hidden;
 }
+
 body{
-  color:var(--text);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--text);
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   background:radial-gradient(circle at 50% 5%,var(--bg2),var(--bg) 78%);
 }
+
+button,select{
+  font:inherit;
+}
+
 .app{
-  width:100%;height:100dvh;max-width:1100px;margin:auto;
+  width:100%;
+  height:100dvh;
+  max-width:1100px;
+  margin:auto;
   padding:max(5px,env(safe-area-inset-top)) 10px max(5px,env(safe-area-inset-bottom));
-  display:grid;grid-template-rows:auto 1fr auto;gap:5px;overflow:hidden;
+  display:grid;
+  grid-template-rows:auto 1fr auto;
+  gap:5px;
+  overflow:hidden;
 }
+
 header{
-  z-index:20;text-align:center;max-height:240px;overflow:hidden;
-  transition:transform .62s cubic-bezier(.18,.8,.18,1),opacity .38s ease,max-height .62s ease;
+  z-index:20;
+  text-align:center;
+  max-height:240px;
+  overflow:hidden;
+  transition:
+    transform .62s cubic-bezier(.18,.8,.18,1),
+    opacity .38s ease,
+    max-height .62s ease;
 }
-h1{margin:0 0 5px;font-size:clamp(1.2rem,4vw,2.1rem);line-height:1;letter-spacing:-.04em}
-.top-controls,.dice-controls,.auto-controls{display:flex;justify-content:center;align-items:center;gap:5px;flex-wrap:wrap}
+
+h1{
+  margin:0 0 5px;
+  font-size:clamp(1.2rem,4vw,2.1rem);
+  line-height:1;
+  letter-spacing:-.04em;
+}
+
+.top-controls,
+.dice-controls,
+.auto-controls{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:5px;
+  flex-wrap:wrap;
+}
+
 .small-button{
-  border:1px solid #ffffff2e;background:#ffffff12;color:#fff;border-radius:9px;
-  padding:6px 10px;font-size:.76rem;font-weight:850;cursor:pointer;touch-action:manipulation
+  border:1px solid #ffffff2e;
+  background:#ffffff12;
+  color:#fff;
+  border-radius:9px;
+  padding:6px 10px;
+  font-size:.76rem;
+  font-weight:850;
+  cursor:pointer;
+  touch-action:manipulation;
 }
-.small-button:active{transform:scale(.96)}
-.small-button.active{background:#ffffff30;border-color:#ffffff66}
-.dice-controls{margin-top:4px}
+
+.small-button:active{
+  transform:scale(.96);
+}
+
+.small-button.active{
+  background:#ffffff30;
+  border-color:#ffffff66;
+}
+
+.dice-controls{
+  margin-top:4px;
+}
+
 .die-control{
-  display:flex;align-items:center;gap:4px;padding:4px 6px;background:var(--panel);
-  border:1px solid #ffffff1a;border-radius:8px
+  display:flex;
+  align-items:center;
+  gap:4px;
+  padding:4px 6px;
+  background:var(--panel);
+  border:1px solid #ffffff1a;
+  border-radius:8px;
 }
-.die-control span,.auto-label{color:var(--muted);font-size:.65rem;font-weight:850}
+
+.die-control span,
+.auto-label{
+  color:var(--muted);
+  font-size:.65rem;
+  font-weight:850;
+}
+
 select{
-  appearance:none;color:#fff;background:#0007;border:1px solid #ffffff38;border-radius:6px;
-  padding:4px 18px 4px 6px;font-size:.74rem;font-weight:850
+  appearance:none;
+  color:#fff;
+  background:#0007;
+  border:1px solid #ffffff38;
+  border-radius:6px;
+  padding:4px 18px 4px 6px;
+  font-size:.74rem;
+  font-weight:850;
 }
-.auto-controls{margin-top:4px}
+
+.auto-controls{
+  margin-top:4px;
+}
 
 .stage{
-  position:relative;min-height:0;overflow:hidden;display:flex;align-items:center;justify-content:center;
-  perspective:1400px;perspective-origin:50% 48%;
+  position:relative;
+  min-height:0;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  perspective:1400px;
+  perspective-origin:50% 48%;
 }
+
 .dice{
-  position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;
-  gap:clamp(20px,5vw,48px);overflow:visible;
+  position:relative;
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(20px,5vw,48px);
+  overflow:visible;
 }
+
 .die-wrap{
-  position:relative;width:var(--size);height:var(--size);flex:0 0 var(--size);
-  display:grid;place-items:center;transform-style:preserve-3d;
+  position:relative;
+  width:var(--size);
+  height:var(--size);
+  flex:0 0 var(--size);
+  display:grid;
+  place-items:center;
+  transform-style:preserve-3d;
   --depth:calc(var(--size) / 2);
 }
+
+/* ---------- D6 ---------- */
+
 .die-cube{
-  width:100%;height:100%;position:relative;transform-style:preserve-3d;
+  width:100%;
+  height:100%;
+  position:relative;
+  transform-style:preserve-3d;
   transform-origin:center center;
 }
+
 .face{
-  position:absolute;inset:0;width:100%;height:100%;border-radius:clamp(12px,3vw,28px);
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  border-radius:clamp(12px,3vw,28px);
   background:linear-gradient(145deg,var(--die2),var(--die));
   border:2px solid var(--edge);
-  box-shadow:inset 0 -8px 0 #00000016,inset 0 2px 5px #ffffff42;
-  backface-visibility:hidden;display:grid;place-items:center;
+  box-shadow:
+    inset 0 -8px 0 #00000016,
+    inset 0 2px 5px #ffffff42;
+  backface-visibility:hidden;
+  display:grid;
+  place-items:center;
 }
+
 .face.front{transform:translateZ(var(--depth))}
 .face.back{transform:rotateY(180deg) translateZ(var(--depth))}
 .face.right{transform:rotateY(90deg) translateZ(var(--depth))}
@@ -84,102 +218,450 @@ select{
 .face.bottom{transform:rotateX(-90deg) translateZ(var(--depth))}
 
 .pips{
-  width:88%;height:88%;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);
-}
-.pip{
-  width:88%;aspect-ratio:1;border-radius:50%;background:var(--pip);place-self:center;
-  box-shadow:inset 0 2px 3px #ffffff20,0 3px 5px #0004;
-}
-.num{
-  color:var(--pip);font-size:clamp(2.4rem,9vw,6rem);font-weight:1000;
-  line-height:1;letter-spacing:-.06em
-}
-.die-label{
-  position:absolute;right:7px;bottom:5px;color:var(--pip);opacity:.35;
-  font-size:.55rem;font-weight:900
+  width:88%;
+  height:88%;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  grid-template-rows:repeat(3,1fr);
 }
 
-/* One/two dice sizing. On a phone, two dice stack and become larger. */
-.dice.count-1 .die-wrap{--size:min(68vw,66vh,470px)}
-.dice.count-2 .die-wrap{--size:min(39vw,43vh,300px)}
-.dice.count-3 .die-wrap{--size:min(28vw,34vh,220px)}
-.dice.count-4 .die-wrap,.dice.count-5 .die-wrap{--size:min(20vw,27vh,175px)}
-.dice.count-6 .die-wrap,.dice.count-7 .die-wrap{--size:min(15vw,20vh,135px)}
-.dice.count-8 .die-wrap,.dice.count-9 .die-wrap,.dice.count-10 .die-wrap{--size:min(12vw,16vh,105px)}
+.pip{
+  width:88%;
+  aspect-ratio:1;
+  border-radius:50%;
+  background:var(--pip);
+  place-self:center;
+  box-shadow:
+    inset 0 2px 3px #ffffff20,
+    0 3px 5px #0004;
+}
+
+.num{
+  color:var(--pip);
+  font-size:clamp(2.4rem,9vw,6rem);
+  font-weight:1000;
+  line-height:1;
+  letter-spacing:-.06em;
+}
+
+.die-label{
+  position:absolute;
+  right:7px;
+  bottom:5px;
+  color:var(--pip);
+  opacity:.35;
+  font-size:.55rem;
+  font-weight:900;
+}
+
+/* ---------- SIZE ---------- */
+
+.dice.count-1 .die-wrap{
+  --size:min(68vw,66vh,470px);
+}
+
+.dice.count-2 .die-wrap{
+  --size:min(39vw,43vh,300px);
+}
+
+.dice.count-3 .die-wrap{
+  --size:min(28vw,34vh,220px);
+}
+
+.dice.count-4 .die-wrap,
+.dice.count-5 .die-wrap{
+  --size:min(20vw,27vh,175px);
+}
+
+.dice.count-6 .die-wrap,
+.dice.count-7 .die-wrap{
+  --size:min(15vw,20vh,135px);
+}
+
+.dice.count-8 .die-wrap,
+.dice.count-9 .die-wrap,
+.dice.count-10 .die-wrap{
+  --size:min(12vw,16vh,105px);
+}
+
+/* ---------- NON-D6 POLYHEDRAL DICE ---------- */
+
+/*
+  Non-D6 dice use real polygonal silhouettes rather than pretending to be
+  cubes. Their numeric result is generated independently in JavaScript,
+  so a D12 always rolls 1-12, D20 rolls 1-20, etc.
+*/
+
+.generic .die-cube{
+  position:relative;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  transform-style:preserve-3d;
+  background:
+    linear-gradient(
+      145deg,
+      var(--die2) 0%,
+      var(--die) 45%,
+      color-mix(in srgb,var(--die) 78%,#000) 100%
+    );
+  border:3px solid var(--edge);
+  box-shadow:
+    inset 0 -14px 20px #0003,
+    inset 0 4px 9px #ffffff55,
+    0 16px 32px #0007;
+}
+
+/* The generic die has one result panel.
+   The shape itself communicates the die type. */
+.generic .face{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+  backface-visibility:visible;
+}
+
+.generic .face.front{
+  transform:none;
+  display:grid;
+  place-items:center;
+}
+
+/* Add subtle facet shading using the cube's pseudo-elements. */
+.generic .die-cube::before,
+.generic .die-cube::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+}
+
+.generic .die-cube::before{
+  background:linear-gradient(135deg,#ffffff42,transparent 40%,#00000022);
+  mix-blend-mode:overlay;
+}
+
+.generic .die-cube::after{
+  background:radial-gradient(circle at 35% 25%,#fff4,transparent 38%);
+}
+
+/* D4 — triangular silhouette */
+.die-wrap.d4 .die-cube{
+  clip-path:polygon(50% 2%,97% 91%,3% 91%);
+}
+
+/* D8 — diamond/octahedron silhouette */
+.die-wrap.d8 .die-cube{
+  clip-path:polygon(50% 2%,97% 50%,50% 98%,3% 50%);
+}
+
+/* D10 — pentagonal silhouette */
+.die-wrap.d10 .die-cube{
+  clip-path:polygon(
+    50% 2%,
+    97% 35%,
+    79% 96%,
+    21% 96%,
+    3% 35%
+  );
+}
+
+/* D12 — recognizable multi-sided silhouette */
+.die-wrap.d12 .die-cube{
+  clip-path:polygon(
+    30% 2%,
+    70% 2%,
+    95% 27%,
+    98% 63%,
+    73% 96%,
+    27% 96%,
+    2% 63%,
+    5% 27%
+  );
+}
+
+/* D20 — many-sided silhouette */
+.die-wrap.d20 .die-cube{
+  clip-path:polygon(
+    50% 1%,
+    78% 12%,
+    95% 34%,
+    98% 66%,
+    78% 88%,
+    50% 99%,
+    22% 88%,
+    2% 66%,
+    5% 34%,
+    22% 12%
+  );
+}
+
+/* D100 — percentage die */
+.die-wrap.d100 .die-cube{
+  clip-path:circle(48% at 50% 50%);
+  border-radius:50%;
+}
+
+.generic .num{
+  position:relative;
+  z-index:5;
+  color:var(--pip);
+  font-size:clamp(2rem,8vw,5rem);
+  font-weight:1000;
+  line-height:1;
+  text-shadow:0 2px 2px #ffffff55;
+}
+
+.generic .die-label{
+  position:absolute;
+  right:12%;
+  bottom:11%;
+  z-index:6;
+  color:var(--pip);
+  opacity:.45;
+  font-size:.55rem;
+  font-weight:900;
+}
+
+/* ---------- ROLL ANIMATIONS ---------- */
 
 .roll .die-wrap{
   animation:travelRoll 1.65s cubic-bezier(.13,.78,.18,1) both;
 }
-.roll .die-cube,
-.die-cube.cube-rolling{
+
+.roll .die-cube{
   animation:cubeTumble 1.65s cubic-bezier(.12,.78,.18,1) both;
 }
-@keyframes travelRoll{
-  0%{transform:translate3d(var(--fromX),var(--fromY),-100px) scale(.62)}
-  14%{transform:translate3d(calc(var(--fromX)*.55),calc(var(--fromY)*-.75),70px) scale(.86)}
-  31%{transform:translate3d(calc(var(--fromX)*-.38),calc(var(--fromY)*.55),120px) scale(1.02)}
-  48%{transform:translate3d(calc(var(--fromX)*.25),calc(var(--fromY)*-.38),55px) scale(.95)}
-  66%{transform:translate3d(calc(var(--fromX)*-.12),calc(var(--fromY)*.2),80px) scale(1.02)}
-  82%{transform:translate3d(calc(var(--fromX)*.04),calc(var(--fromY)*-.06),20px) scale(.99)}
-  93%{transform:translate3d(0,0,8px) scale(1.015)}
-  100%{transform:translate3d(0,0,0) scale(1)}
-}
-@keyframes cubeTumble{
-  0%{transform:rotateX(0deg) rotateY(0deg) rotateZ(0deg)}
-  13%{transform:rotateX(150deg) rotateY(125deg) rotateZ(85deg)}
-  29%{transform:rotateX(330deg) rotateY(285deg) rotateZ(205deg)}
-  47%{transform:rotateX(555deg) rotateY(470deg) rotateZ(325deg)}
-  64%{transform:rotateX(760deg) rotateY(650deg) rotateZ(455deg)}
-  81%{transform:rotateX(930deg) rotateY(815deg) rotateZ(575deg)}
-  93%{transform:rotateX(1020deg) rotateY(900deg) rotateZ(635deg)}
-  100%{transform:rotateX(1080deg) rotateY(990deg) rotateZ(690deg)}
-}
-.settle{animation:settle .25s ease-out}
-@keyframes settle{
-  0%{transform:translateY(0) scale(1)}
-  40%{transform:translateY(-9px) scale(1.015)}
-  100%{transform:translateY(0) scale(1)}
+
+.generic .die-cube.cube-rolling{
+  animation:polyTumble 1.65s cubic-bezier(.12,.78,.18,1) both;
 }
 
-/* Non-D6 dice use the same real 3-D rolling body, with their result shown on all visible
-   faces so the number never mysteriously changes after landing. */
-.generic .face{backface-visibility:visible}
-.generic .face:nth-child(n+2){display:none}
-.generic .face.front{transform:translateZ(var(--depth));}
+@keyframes travelRoll{
+  0%{
+    transform:translate3d(var(--fromX),var(--fromY),-100px) scale(.62);
+  }
+  14%{
+    transform:translate3d(
+      calc(var(--fromX)*.55),
+      calc(var(--fromY)*-.75),
+      70px
+    ) scale(.86);
+  }
+  31%{
+    transform:translate3d(
+      calc(var(--fromX)*-.38),
+      calc(var(--fromY)*.55),
+      120px
+    ) scale(1.02);
+  }
+  48%{
+    transform:translate3d(
+      calc(var(--fromX)*.25),
+      calc(var(--fromY)*-.38),
+      55px
+    ) scale(.95);
+  }
+  66%{
+    transform:translate3d(
+      calc(var(--fromX)*-.12),
+      calc(var(--fromY)*.2),
+      80px
+    ) scale(1.02);
+  }
+  82%{
+    transform:translate3d(
+      calc(var(--fromX)*.04),
+      calc(var(--fromY)*-.06),
+      20px
+    ) scale(.99);
+  }
+  93%{
+    transform:translate3d(0,0,8px) scale(1.015);
+  }
+  100%{
+    transform:translate3d(0,0,0) scale(1);
+  }
+}
+
+@keyframes cubeTumble{
+  0%{
+    transform:rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+  }
+  13%{
+    transform:rotateX(150deg) rotateY(125deg) rotateZ(85deg);
+  }
+  29%{
+    transform:rotateX(330deg) rotateY(285deg) rotateZ(205deg);
+  }
+  47%{
+    transform:rotateX(555deg) rotateY(470deg) rotateZ(325deg);
+  }
+  64%{
+    transform:rotateX(760deg) rotateY(650deg) rotateZ(455deg);
+  }
+  81%{
+    transform:rotateX(930deg) rotateY(815deg) rotateZ(575deg);
+  }
+  93%{
+    transform:rotateX(1020deg) rotateY(900deg) rotateZ(635deg);
+  }
+  100%{
+    transform:rotateX(1080deg) rotateY(990deg) rotateZ(690deg);
+  }
+}
+
+@keyframes polyTumble{
+  0%{
+    transform:
+      rotateX(0deg)
+      rotateY(0deg)
+      rotateZ(0deg)
+      scale(.7);
+  }
+  20%{
+    transform:
+      rotateX(140deg)
+      rotateY(190deg)
+      rotateZ(90deg)
+      scale(1.08);
+  }
+  45%{
+    transform:
+      rotateX(330deg)
+      rotateY(410deg)
+      rotateZ(210deg)
+      scale(.94);
+  }
+  70%{
+    transform:
+      rotateX(540deg)
+      rotateY(620deg)
+      rotateZ(350deg)
+      scale(1.04);
+  }
+  90%{
+    transform:
+      rotateX(690deg)
+      rotateY(780deg)
+      rotateZ(470deg)
+      scale(1.01);
+  }
+  100%{
+    transform:
+      rotateX(760deg)
+      rotateY(900deg)
+      rotateZ(540deg)
+      scale(1);
+  }
+}
+
+.settle{
+  animation:settle .25s ease-out;
+}
+
+@keyframes settle{
+  0%{
+    transform:translateY(0) scale(1);
+  }
+  40%{
+    transform:translateY(-9px) scale(1.015);
+  }
+  100%{
+    transform:translateY(0) scale(1);
+  }
+}
+
+/* ---------- PASS MESSAGE ---------- */
 
 .pass-message{
-  position:absolute;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;
-  text-align:center;opacity:0;transform:scale(.7);pointer-events:none;
-  transition:opacity .2s,transform .3s cubic-bezier(.2,.9,.2,1)
+  position:absolute;
+  inset:0;
+  z-index:50;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  opacity:0;
+  transform:scale(.7);
+  pointer-events:none;
+  transition:
+    opacity .2s,
+    transform .3s cubic-bezier(.2,.9,.2,1);
 }
-.pass-message.visible{opacity:1;transform:scale(1)}
+
+.pass-message.visible{
+  opacity:1;
+  transform:scale(1);
+}
+
 .pass-inner{
-  padding:clamp(20px,5vw,55px) clamp(25px,7vw,75px);border-radius:28px;
-  background:#000d;border:3px solid #ffffffb3;
-  box-shadow:0 20px 70px #000b,0 0 50px var(--glow);backdrop-filter:blur(10px);
-  font-size:clamp(2.2rem,10vw,6rem);line-height:.95;font-weight:1000;letter-spacing:-.045em
+  padding:clamp(20px,5vw,55px) clamp(25px,7vw,75px);
+  border-radius:28px;
+  background:#000d;
+  border:3px solid #ffffffb3;
+  box-shadow:
+    0 20px 70px #000b,
+    0 0 50px var(--glow);
+  backdrop-filter:blur(10px);
+  font-size:clamp(2.2rem,10vw,6rem);
+  line-height:.95;
+  font-weight:1000;
+  letter-spacing:-.045em;
 }
-.bottom{display:flex;justify-content:center;align-items:center;padding:2px 0;z-index:30}
+
+/* ---------- BOTTOM BUTTON ---------- */
+
+.bottom{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:2px 0;
+  z-index:30;
+}
+
 #mainButton{
-  width:min(100%,570px);min-height:clamp(56px,9vh,80px);border:0;border-radius:17px;
-  background:linear-gradient(180deg,var(--accent2),var(--accent));color:var(--accentText);
-  font-size:clamp(1.25rem,5vw,2rem);font-weight:950;cursor:pointer;touch-action:manipulation;
-  box-shadow:0 10px 26px #0006,0 7px 20px #ffb52e33
+  width:min(100%,570px);
+  min-height:clamp(56px,9vh,80px);
+  border:0;
+  border-radius:17px;
+  background:linear-gradient(180deg,var(--accent2),var(--accent));
+  color:var(--accentText);
+  font-size:clamp(1.25rem,5vw,2rem);
+  font-weight:950;
+  cursor:pointer;
+  touch-action:manipulation;
+  box-shadow:
+    0 10px 26px #0006,
+    0 7px 20px #ffb52e33;
 }
-#mainButton:active{transform:scale(.975) translateY(2px)}
+
+#mainButton:active{
+  transform:scale(.975) translateY(2px);
+}
+
+/* ---------- HIDDEN CONTROLS ---------- */
 
 .app.controls-hidden{
   grid-template-rows:0 1fr auto;
 }
+
 .controls-hidden header{
   transform:translateY(calc(-100% - 30px));
   opacity:0;
   max-height:0;
   pointer-events:none;
 }
+
 .controls-hidden .reveal-tab{
   top:0;
 }
+
 .reveal-tab{
   position:fixed;
   top:-2px;
@@ -197,70 +679,132 @@ select{
   letter-spacing:.03em;
   opacity:0;
   pointer-events:none;
-  transition:transform .35s ease,opacity .25s ease;
+  transition:
+    transform .35s ease,
+    opacity .25s ease;
   backdrop-filter:blur(8px);
 }
+
 .controls-hidden .reveal-tab{
   transform:translateX(-50%) translateY(0);
   opacity:.7;
   pointer-events:auto;
 }
+
 .controls-hidden .reveal-tab:active{
   transform:translateX(-50%) translateY(2px);
 }
 
 .auto-mode #mainButton{
-  background:linear-gradient(180deg,#ff7878,#e53b3b);color:#fff;
+  background:linear-gradient(180deg,#ff7878,#e53b3b);
+  color:#fff;
 }
 
+/* ---------- MOBILE ---------- */
+
 @media(max-width:650px) and (orientation:portrait){
-  .dice.count-2{flex-direction:column;gap:clamp(10px,2.5vh,20px)}
-  .dice.count-2 .die-wrap{--size:min(57vw,29vh,250px)}
+  .dice.count-2{
+    flex-direction:column;
+    gap:clamp(10px,2.5vh,20px);
+  }
+
+  .dice.count-2 .die-wrap{
+    --size:min(57vw,29vh,250px);
+  }
 }
+
 @media(orientation:landscape) and (max-height:520px){
-  .app{padding-top:3px;gap:3px}
-  h1{font-size:1.1rem}.small-button{padding:4px 7px;font-size:.68rem}
-  #mainButton{min-height:44px;font-size:1.05rem}
-  .dice.count-1 .die-wrap{--size:min(38vh,34vw,255px)}
-  .dice.count-2 .die-wrap{--size:min(32vh,34vw,230px)}
+  .app{
+    padding-top:3px;
+    gap:3px;
+  }
+
+  h1{
+    font-size:1.1rem;
+  }
+
+  .small-button{
+    padding:4px 7px;
+    font-size:.68rem;
+  }
+
+  #mainButton{
+    min-height:44px;
+    font-size:1.05rem;
+  }
+
+  .dice.count-1 .die-wrap{
+    --size:min(38vh,34vw,255px);
+  }
+
+  .dice.count-2 .die-wrap{
+    --size:min(32vh,34vw,230px);
+  }
 }
 </style>
 </head>
+
 <body>
+
 <main class="app" id="app">
-<button class="reveal-tab" id="revealTab" aria-label="Show controls">⌄ SHOW CONTROLS</button>
-<header id="controls">
-  <h1>🎲 Dice Roller</h1>
-  <div class="top-controls">
-    <button class="small-button" id="addDie">＋ Add Die</button>
-    <button class="small-button" id="removeDie">− Remove Die</button>
-    <button class="small-button" id="skinButton">🎨 Random Skin</button>
-    <button class="small-button" id="voiceButton" aria-pressed="false">🔇 Voice Off</button>
-  </div>
-  <div class="dice-controls" id="diceControls"></div>
-  <div class="auto-controls">
-    <span class="auto-label">AUTO</span>
-    <select id="intervalSelect">
-      <option value="2">2 sec</option>
-      <option value="3">3 sec</option>
-      <option value="4" selected>4 sec</option>
-      <option value="5">5 sec</option>
-      <option value="10">10 sec</option>
-    </select>
-    <button class="small-button" id="autoButton">▶ Auto Roll</button>
-  </div>
-</header>
 
-<section class="stage" id="stage">
-  <div class="dice" id="dice"></div>
-  <div class="pass-message" id="passMessage">
-    <div class="pass-inner">PASS THE BALL</div>
-  </div>
-</section>
+  <button
+    class="reveal-tab"
+    id="revealTab"
+    aria-label="Show controls">
+    ⌄ SHOW CONTROLS
+  </button>
 
-<div class="bottom">
-  <button id="mainButton">ROLL 🎲</button>
-</div>
+  <header id="controls">
+
+    <h1>🎲 Dice Roller</h1>
+
+    <div class="top-controls">
+      <button class="small-button" id="addDie">＋ Add Die</button>
+      <button class="small-button" id="removeDie">− Remove Die</button>
+      <button class="small-button" id="skinButton">🎨 Random Skin</button>
+      <button
+        class="small-button"
+        id="voiceButton"
+        aria-pressed="false">
+        🔇 Voice Off
+      </button>
+    </div>
+
+    <div class="dice-controls" id="diceControls"></div>
+
+    <div class="auto-controls">
+      <span class="auto-label">AUTO</span>
+
+      <select id="intervalSelect">
+        <option value="2">2 sec</option>
+        <option value="3">3 sec</option>
+        <option value="4" selected>4 sec</option>
+        <option value="5">5 sec</option>
+        <option value="10">10 sec</option>
+      </select>
+
+      <button class="small-button" id="autoButton">
+        ▶ Auto Roll
+      </button>
+    </div>
+
+  </header>
+
+  <section class="stage" id="stage">
+
+    <div class="dice" id="dice"></div>
+
+    <div class="pass-message" id="passMessage">
+      <div class="pass-inner">PASS THE BALL</div>
+    </div>
+
+  </section>
+
+  <div class="bottom">
+    <button id="mainButton">ROLL 🎲</button>
+  </div>
+
 </main>
 
 <script>
@@ -279,13 +823,21 @@ const passMessage=document.getElementById("passMessage");
 const revealTab=document.getElementById("revealTab");
 
 const SIDE_OPTIONS=[2,4,6,8,10,12,20,100];
+
 const PIPS={
-  1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],
-  5:[0,2,4,6,8],6:[0,2,3,5,6,8]
+  1:[4],
+  2:[0,8],
+  3:[0,4,8],
+  4:[0,2,6,8],
+  5:[0,2,4,6,8],
+  6:[0,2,3,5,6,8]
 };
 
-/* D6 physical cube orientations.
-   Each entry says which result is on the FRONT face after the final rotation. */
+/*
+  These orientations are only used for the D6 because it has six real
+  physical cube faces. Other dice display their frozen numeric result
+  independently and use a polyhedral silhouette.
+*/
 const D6_ORIENT={
   1:"rotateX(0deg) rotateY(0deg) rotateZ(0deg)",
   2:"rotateX(0deg) rotateY(90deg) rotateZ(0deg)",
@@ -297,18 +849,30 @@ const D6_ORIENT={
 
 let settings=[6,6];
 let values=[1,1];
-let auto=false, paused=false, rolling=false, voiceEnabled=false;
-let timer=null, passTimer=null, audioCtx=null;
+
+let auto=false;
+let paused=false;
+let rolling=false;
+let voiceEnabled=false;
+
+let timer=null;
+let passTimer=null;
+let audioCtx=null;
 
 const rnd=n=>Math.floor(Math.random()*n)+1;
 
+/* ---------- CONTROLS ---------- */
+
 function renderControls(){
   diceControls.innerHTML="";
+
   settings.forEach((s,i)=>{
     const box=document.createElement("div");
     box.className="die-control";
+
     const label=document.createElement("span");
     label.textContent=`D${i+1}`;
+
     const select=document.createElement("select");
 
     SIDE_OPTIONS.forEach(v=>{
@@ -321,7 +885,13 @@ function renderControls(){
 
     select.onchange=()=>{
       settings[i]=Number(select.value);
+
+      /*
+        If changing from D20 to D6, for example, don't leave an impossible
+        value such as 17 on the new D6.
+      */
       values[i]=Math.min(values[i]||1,settings[i])||1;
+
       renderDice();
     };
 
@@ -330,34 +900,46 @@ function renderControls(){
   });
 }
 
+/* ---------- D6 ---------- */
+
 function pipFace(value){
   const face=document.createElement("div");
   face.className="face";
+
   const grid=document.createElement("div");
   grid.className="pips";
 
   for(let i=0;i<9;i++){
     const pip=document.createElement("span");
     pip.className="pip";
-    pip.style.visibility=PIPS[value]?.includes(i)?"visible":"hidden";
+    pip.style.visibility=
+      PIPS[value]?.includes(i) ? "visible" : "hidden";
+
     grid.appendChild(pip);
   }
+
   face.appendChild(grid);
   return face;
 }
 
+/* ---------- GENERIC NUMBERED DICE ---------- */
+
 function numberedFace(value,sides){
   const face=document.createElement("div");
   face.className="face front";
+
   const n=document.createElement("div");
   n.className="num";
   n.textContent=value;
+
   face.appendChild(n);
 
   const label=document.createElement("span");
   label.className="die-label";
   label.textContent=`D${sides}`;
+
   face.appendChild(label);
+
   return face;
 }
 
@@ -369,20 +951,39 @@ function makeD6(value){
   cube.className="die-cube";
 
   /*
-    The front face is ALWAYS the frozen numeric result.
-    We intentionally keep the game result separate from CSS transforms:
-    CSS is visual only; game logic never reads the faces.
+    Keep the six faces consistent with the selected result.
   */
-  const faceValues = {
-    front: value,
-    back: 7-value,
-    right: ({1:3,2:4,3:1,4:2,5:6,6:5})[value],
-    left: 7-(({1:3,2:4,3:1,4:2,5:6,6:5})[value]),
-    top: ({1:5,2:6,3:5,4:6,5:1,6:2})[value],
-    bottom: 7-(({1:5,2:6,3:5,4:6,5:1,6:2})[value])
+  const rightMap={
+    1:3,
+    2:4,
+    3:1,
+    4:2,
+    5:6,
+    6:5
   };
 
-  const faces = {
+  const topMap={
+    1:5,
+    2:6,
+    3:5,
+    4:6,
+    5:1,
+    6:2
+  };
+
+  const right=rightMap[value];
+  const top=topMap[value];
+
+  const faceValues={
+    front:value,
+    back:7-value,
+    right,
+    left:7-right,
+    top,
+    bottom:7-top
+  };
+
+  const faces={
     front:pipFace(faceValues.front),
     back:pipFace(faceValues.back),
     right:pipFace(faceValues.right),
@@ -404,32 +1005,42 @@ function makeD6(value){
   cube.dataset.finalTransform=D6_ORIENT[value];
 
   wrap.appendChild(cube);
+
   return wrap;
 }
 
+/*
+  This is the important fix.
+
+  Previously D12/D20/etc. were literally being created as a six-faced
+  cube and then five faces were hidden.
+
+  Now every non-D6 die gets a class matching its side count:
+    d4, d8, d10, d12, d20, d100
+
+  CSS uses those classes to give each die a different polyhedral silhouette.
+*/
 function makeGeneric(sides,value){
   const wrap=document.createElement("div");
-  wrap.className="die-wrap generic";
+
+  wrap.className=`die-wrap generic d${sides}`;
 
   const cube=document.createElement("div");
   cube.className="die-cube";
 
   const front=numberedFace(value,sides);
-  front.classList.add("front");
 
-  /* Give non-D6 dice a dimensional body. The displayed result is on the final face. */
-  const blank=["back","right","left","top","bottom"];
   cube.appendChild(front);
-  blank.forEach(side=>{
-    const f=document.createElement("div");
-    f.className=`face ${side}`;
-    cube.appendChild(f);
-  });
 
-  cube.dataset.final=value;
+  cube.dataset.final=String(value);
+  cube.dataset.sides=String(sides);
+
   wrap.appendChild(cube);
+
   return wrap;
 }
+
+/* ---------- RENDERING ---------- */
 
 function renderDice(){
   dice.innerHTML="";
@@ -437,85 +1048,144 @@ function renderDice(){
 
   settings.forEach((s,i)=>{
     const value=Math.min(values[i]||1,s);
+
     values[i]=value;
-    dice.appendChild(s===6?makeD6(value):makeGeneric(s,value));
+
+    dice.appendChild(
+      s===6
+        ? makeD6(value)
+        : makeGeneric(s,value)
+    );
   });
 }
 
-function setFinalValue(wrap,sides,value){
-  if(sides===6){
-    /* Rebuild the six physical faces so every pip face is consistent with the final result. */
-    const replacement=makeD6(value);
-    replacement.style.cssText=wrap.style.cssText;
-    wrap.replaceWith(replacement);
-  }else{
-    const n=wrap.querySelector(".front .num");
-    if(n)n.textContent=value;
-  }
-}
+/* ---------- AUDIO ---------- */
 
 function getAudio(){
-  if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();
-  if(audioCtx.state==="suspended")audioCtx.resume();
+  if(!audioCtx){
+    audioCtx=new (
+      window.AudioContext ||
+      window.webkitAudioContext
+    )();
+  }
+
+  if(audioCtx.state==="suspended"){
+    audioCtx.resume();
+  }
+
   return audioCtx;
 }
 
 function clack(){
   try{
     const c=getAudio();
+
     const o=c.createOscillator();
     const g=c.createGain();
+
     o.type="square";
-    o.frequency.setValueAtTime(125,c.currentTime);
-    o.frequency.exponentialRampToValueAtTime(58,c.currentTime+.055);
-    g.gain.setValueAtTime(.0001,c.currentTime);
-    g.gain.exponentialRampToValueAtTime(.10,c.currentTime+.006);
-    g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+.075);
+
+    o.frequency.setValueAtTime(
+      125,
+      c.currentTime
+    );
+
+    o.frequency.exponentialRampToValueAtTime(
+      58,
+      c.currentTime+.055
+    );
+
+    g.gain.setValueAtTime(
+      .0001,
+      c.currentTime
+    );
+
+    g.gain.exponentialRampToValueAtTime(
+      .10,
+      c.currentTime+.006
+    );
+
+    g.gain.exponentialRampToValueAtTime(
+      .0001,
+      c.currentTime+.075
+    );
+
     o.connect(g).connect(c.destination);
-    o.start();o.stop(c.currentTime+.08);
+
+    o.start();
+    o.stop(c.currentTime+.08);
   }catch(e){}
 }
 
 function rollNoise(){
   try{
     const c=getAudio();
-    const b=c.createBuffer(1,c.sampleRate*.22,c.sampleRate);
+
+    const b=c.createBuffer(
+      1,
+      c.sampleRate*.22,
+      c.sampleRate
+    );
+
     const data=b.getChannelData(0);
-    for(let i=0;i<data.length;i++)
-      data[i]=(Math.random()*2-1)*Math.pow(1-i/data.length,2.6);
+
+    for(let i=0;i<data.length;i++){
+      data[i]=
+        (Math.random()*2-1) *
+        Math.pow(1-i/data.length,2.6);
+    }
 
     const src=c.createBufferSource();
     const filter=c.createBiquadFilter();
     const gain=c.createGain();
+
     filter.type="bandpass";
     filter.frequency.value=1350;
     filter.Q.value=.7;
+
     gain.gain.value=.10;
+
     src.buffer=b;
-    src.connect(filter).connect(gain).connect(c.destination);
+
+    src.connect(filter)
+      .connect(gain)
+      .connect(c.destination);
+
     src.start();
   }catch(e){}
 }
 
+/* ---------- FULLSCREEN ---------- */
+
 async function enterImmersive(){
   try{
     const target=document.documentElement;
-    if(document.fullscreenElement) return;
+
+    if(document.fullscreenElement){
+      return;
+    }
+
     if(target.requestFullscreen){
-      await target.requestFullscreen({navigationUI:"hide"});
+      await target.requestFullscreen({
+        navigationUI:"hide"
+      });
     }else if(target.webkitRequestFullscreen){
       target.webkitRequestFullscreen();
     }
-  }catch(e){
-    /* Some mobile browsers block fullscreen; the dice roller still works normally. */
-  }
+  }catch(e){}
 }
 
 async function exitImmersive(){
   try{
-    if(document.fullscreenElement && document.exitFullscreen){
+    if(
+      document.fullscreenElement &&
+      document.exitFullscreen
+    ){
       await document.exitFullscreen();
-    }else if(document.webkitFullscreenElement && document.webkitExitFullscreen){
+    }else if(
+      document.webkitFullscreenElement &&
+      document.webkitExitFullscreen
+    ){
       document.webkitExitFullscreen();
     }
   }catch(e){}
@@ -527,10 +1197,15 @@ function hideControls(){
 }
 
 function showControls(force=false){
-  if(auto && !force)return;
+  if(auto && !force){
+    return;
+  }
+
   app.classList.remove("controls-hidden");
   exitImmersive();
 }
+
+/* ---------- ROLL ANIMATION ---------- */
 
 function startRollAnimation(){
   const wraps=[...dice.children];
@@ -538,88 +1213,140 @@ function startRollAnimation(){
   wraps.forEach((wrap,i)=>{
     const cube=wrap.querySelector(".die-cube");
 
-    /* Hard reset the CSS animation timeline, but DO NOT leave an inline transform
-       behind. The keyframe animation must be allowed to control the cube. */
+    /*
+      Reset animation completely before every roll.
+      This prevents a browser from reusing the previous animation state.
+    */
     wrap.classList.remove("roll","settle");
+
     cube.classList.remove("cube-rolling");
+
     wrap.style.animation="none";
     cube.style.animation="none";
+
     wrap.style.transform="";
     cube.style.transform="";
 
-    const fromX=i%2===0?"-82vw":"82vw";
-    const fromY=(Math.random()>.5?1:-1)*(8+Math.random()*22)+"vh";
+    const fromX=
+      i%2===0
+        ? "-82vw"
+        : "82vw";
+
+    const fromY=
+      (Math.random()>.5 ? 1 : -1) *
+      (8+Math.random()*22) +
+      "vh";
+
     wrap.style.setProperty("--fromX",fromX);
     wrap.style.setProperty("--fromY",fromY);
 
     void wrap.offsetWidth;
     void cube.offsetWidth;
 
-    /* Re-apply both animations every single roll. */
     wrap.style.animation="";
     cube.style.animation="";
+
     wrap.classList.add("roll");
     cube.classList.add("cube-rolling");
   });
 
   rollNoise();
-  [320,690,1040,1400].forEach(t=>setTimeout(clack,t));
+
+  [320,690,1040,1400].forEach(t=>{
+    setTimeout(clack,t);
+  });
 }
 
 function finishRoll(result){
-  const oldWraps=[...dice.children];
+  const wraps=[...dice.children];
 
-  /* The keyframe animation has now completed. Only now do we lock the cube to
-     its actual result, so there is never a late face-number change. */
-  oldWraps.forEach((wrap,i)=>{
+  wraps.forEach((wrap,i)=>{
     const cube=wrap.querySelector(".die-cube");
+
     cube.style.animation="none";
     cube.classList.remove("cube-rolling");
 
+    /*
+      D6 gets a real cube orientation.
+      Other dice already display the frozen number on their face.
+    */
     if(settings[i]===6){
-      cube.style.transform=D6_ORIENT[result[i]];
+      cube.style.transform=
+        D6_ORIENT[result[i]];
     }
 
     wrap.classList.remove("roll");
     wrap.classList.add("settle");
+
     values[i]=result[i];
-    setTimeout(()=>wrap.classList.remove("settle"),280);
+
+    setTimeout(()=>{
+      wrap.classList.remove("settle");
+    },280);
   });
 
   clack();
 }
 
+/* ---------- GAME LOGIC ---------- */
+
 async function roll(){
-  if(rolling||paused||passMessage.classList.contains("visible"))return;
+  if(
+    rolling ||
+    paused ||
+    passMessage.classList.contains("visible")
+  ){
+    return;
+  }
 
   rolling=true;
+
   hideControls();
 
-  const result=settings.map((sides)=>{
+  /*
+    IMPORTANT:
+    Generate the actual random result BEFORE the animation.
+
+    A D12 gets exactly 1-12.
+    A D20 gets exactly 1-20.
+    A D100 gets exactly 1-100.
+
+    The visual animation cannot change these numbers.
+  */
+  const result=settings.map(sides=>{
     const r=rnd(sides);
-    return Math.max(1,Math.min(sides,Math.trunc(r)));
+
+    return Math.max(
+      1,
+      Math.min(
+        sides,
+        Math.trunc(r)
+      )
+    );
   });
 
-  /* Freeze these values before animation begins. Nothing in the animation can
-     change them, and the doubles rule below uses these exact values. */
   const frozenResult=result.slice();
 
   startRollAnimation();
 
-  await new Promise(resolve=>setTimeout(resolve,1720));
+  await new Promise(resolve=>{
+    setTimeout(resolve,1720);
+  });
 
   finishRoll(frozenResult);
+
   rolling=false;
 
-  /* GAME RULE: PASS THE BALL happens ONLY when the two actual rolled values
-     are exactly equal. This check uses the frozen numeric roll results, never
-     the cube's CSS orientation or pip artwork. */
-  const isDoubles =
+  /*
+    PASS THE BALL only happens when two dice were selected
+    AND their actual generated results are identical.
+  */
+  const isDoubles=
     auto &&
-    settings.length === 2 &&
+    settings.length===2 &&
     Number.isInteger(result[0]) &&
     Number.isInteger(result[1]) &&
-    result[0] === result[1];
+    result[0]===result[1];
 
   if(isDoubles){
     showPass();
@@ -630,39 +1357,71 @@ async function roll(){
   }
 }
 
+/* ---------- VOICE ---------- */
+
 function sayPassTheBall(){
-  if(!voiceEnabled || !("speechSynthesis" in window)) return;
+  if(
+    !voiceEnabled ||
+    !("speechSynthesis" in window)
+  ){
+    return;
+  }
 
   window.speechSynthesis.cancel();
-  const utterance=new SpeechSynthesisUtterance("Pass the ball");
-  utterance.rate=0.9;
+
+  const utterance=
+    new SpeechSynthesisUtterance(
+      "Pass the ball"
+    );
+
+  utterance.rate=.9;
   utterance.pitch=1;
   utterance.volume=1;
+
   window.speechSynthesis.speak(utterance);
 }
+
+/* ---------- PASS MESSAGE ---------- */
 
 function showPass(){
   clearTimeout(timer);
   clearTimeout(passTimer);
+
   passMessage.classList.add("visible");
+
   sayPassTheBall();
 
-  /* PASS THE BALL stays visible for exactly one second longer than the
-     selected Auto Roll interval. There is NO additional interval afterward:
-     the next roll starts immediately when the message disappears. */
-  const passDuration=(Number(intervalSelect.value)*1000)+1000;
+  /*
+    PASS THE BALL stays visible for one second longer than
+    the selected Auto Roll interval.
+  */
+  const passDuration=
+    Number(intervalSelect.value)*1000+1000;
 
   passTimer=setTimeout(()=>{
     passMessage.classList.remove("visible");
-    if(auto&&!paused) roll();
+
+    if(auto && !paused){
+      roll();
+    }
   },passDuration);
 }
 
+/* ---------- AUTO ROLL ---------- */
+
 function schedule(){
   clearTimeout(timer);
-  if(auto&&!paused&&!rolling&&!passMessage.classList.contains("visible")){
+
+  if(
+    auto &&
+    !paused &&
+    !rolling &&
+    !passMessage.classList.contains("visible")
+  ){
     timer=setTimeout(()=>{
-      if(auto&&!paused) roll();
+      if(auto && !paused){
+        roll();
+      }
     },Number(intervalSelect.value)*1000);
   }
 }
@@ -670,138 +1429,285 @@ function schedule(){
 function startAuto(){
   auto=true;
   paused=false;
+
   app.classList.add("auto-mode");
+
   autoButton.textContent="⏹ Stop Auto";
   autoButton.classList.add("active");
+
   mainButton.textContent="⏸ PAUSE";
+
   hideControls();
+
   roll();
 }
 
 function stopAuto(){
   auto=false;
   paused=false;
+
   clearTimeout(timer);
   clearTimeout(passTimer);
+
   passMessage.classList.remove("visible");
+
   app.classList.remove("auto-mode");
+
   autoButton.textContent="▶ Auto Roll";
   autoButton.classList.remove("active");
+
   mainButton.textContent="ROLL 🎲";
+
   app.classList.remove("controls-hidden");
+
   exitImmersive();
 }
 
 function togglePause(){
-  if(!auto||rolling)return;
+  if(!auto || rolling){
+    return;
+  }
 
   if(paused){
     paused=false;
+
     mainButton.textContent="⏸ PAUSE";
+
     hideControls();
+
     roll();
   }else{
     paused=true;
+
     clearTimeout(timer);
     clearTimeout(passTimer);
+
     passMessage.classList.remove("visible");
+
     mainButton.textContent="▶ ROLL AGAIN";
 
-    /* PAUSE is also the user's safe way back to the controls.
-       Bring the entire header back immediately so settings/skins can be changed. */
+    /*
+      PAUSE immediately restores the controls.
+    */
     showControls(true);
   }
 }
 
-mainButton.onclick=()=>auto?togglePause():roll();
+/* ---------- BUTTONS ---------- */
 
-autoButton.onclick=()=>auto?stopAuto():startAuto();
+mainButton.onclick=()=>{
+  auto
+    ? togglePause()
+    : roll();
+};
+
+autoButton.onclick=()=>{
+  auto
+    ? stopAuto()
+    : startAuto();
+};
 
 revealTab.onclick=()=>{
   showControls(true);
-  if(paused) mainButton.textContent="▶ ROLL AGAIN";
+
+  if(paused){
+    mainButton.textContent="▶ ROLL AGAIN";
+  }
 };
 
 intervalSelect.onchange=()=>{
-  if(auto&&!paused&&!rolling&&!passMessage.classList.contains("visible"))schedule();
+  if(
+    auto &&
+    !paused &&
+    !rolling &&
+    !passMessage.classList.contains("visible")
+  ){
+    schedule();
+  }
 };
 
 addDie.onclick=()=>{
-  if(settings.length>=10)return;
+  if(settings.length>=10){
+    return;
+  }
+
   settings.push(6);
   values.push(1);
+
   renderControls();
   renderDice();
 };
 
 removeDie.onclick=()=>{
-  if(settings.length<=1)return;
+  if(settings.length<=1){
+    return;
+  }
+
   settings.pop();
   values.pop();
+
   renderControls();
   renderDice();
 };
 
+/* ---------- RANDOM SKINS ---------- */
+
 function randomSkin(){
   const hue=Math.random()*360;
-  const dark=Math.random()<.72;
-  const light=dark?8+Math.random()*18:70+Math.random()*20;
 
-  const die=`hsl(${hue},${dark?55:65}%,${light}%)`;
-  const die2=`hsl(${(hue+24)%360},${dark?60:70}%,${Math.min(97,light+10)}%)`;
-  const pip=dark
-    ?`hsl(${(hue+155)%360},90%,94%)`
-    :`hsl(${(hue+165)%360},60%,9%)`;
-  const edge=`hsl(${(hue+35)%360},85%,${dark?65:35}%)`;
-  const accent=`hsl(${(hue+38)%360},85%,${dark?52:58}%)`;
-  const accent2=`hsl(${(hue+38)%360},90%,${dark?68:78}%)`;
+  const dark=
+    Math.random()<.72;
 
-  document.documentElement.style.setProperty("--die",die);
-  document.documentElement.style.setProperty("--die2",die2);
-  document.documentElement.style.setProperty("--pip",pip);
-  document.documentElement.style.setProperty("--edge",edge);
-  document.documentElement.style.setProperty("--accent",accent);
-  document.documentElement.style.setProperty("--accent2",accent2);
-  document.documentElement.style.setProperty("--bg2",`hsl(${hue},30%,${dark?14:24}%)`);
-  document.documentElement.style.setProperty("--bg",`hsl(${hue},32%,${dark?4:9}%)`);
-  document.documentElement.style.setProperty("--glow",`hsla(${hue},90%,65%,${.10+Math.random()*.25})`);
+  const light=
+    dark
+      ? 8+Math.random()*18
+      : 70+Math.random()*20;
+
+  const die=
+    `hsl(${hue},${dark?55:65}%,${light}%)`;
+
+  const die2=
+    `hsl(${(hue+24)%360},${dark?60:70}%,${Math.min(97,light+10)}%)`;
+
+  const pip=
+    dark
+      ? `hsl(${(hue+155)%360},90%,94%)`
+      : `hsl(${(hue+165)%360},60%,9%)`;
+
+  const edge=
+    `hsl(${(hue+35)%360},85%,${dark?65:35}%)`;
+
+  const accent=
+    `hsl(${(hue+38)%360},85%,${dark?52:58}%)`;
+
+  const accent2=
+    `hsl(${(hue+38)%360},90%,${dark?68:78}%)`;
+
+  document.documentElement.style.setProperty(
+    "--die",
+    die
+  );
+
+  document.documentElement.style.setProperty(
+    "--die2",
+    die2
+  );
+
+  document.documentElement.style.setProperty(
+    "--pip",
+    pip
+  );
+
+  document.documentElement.style.setProperty(
+    "--edge",
+    edge
+  );
+
+  document.documentElement.style.setProperty(
+    "--accent",
+    accent
+  );
+
+  document.documentElement.style.setProperty(
+    "--accent2",
+    accent2
+  );
+
+  document.documentElement.style.setProperty(
+    "--bg2",
+    `hsl(${hue},30%,${dark?14:24}%)`
+  );
+
+  document.documentElement.style.setProperty(
+    "--bg",
+    `hsl(${hue},32%,${dark?4:9}%)`
+  );
+
+  document.documentElement.style.setProperty(
+    "--glow",
+    `hsla(${hue},90%,65%,${.10+Math.random()*.25})`
+  );
 }
+
+skinButton.onclick=randomSkin;
+
+/* ---------- VOICE ---------- */
 
 voiceButton.onclick=()=>{
   voiceEnabled=!voiceEnabled;
-  voiceButton.setAttribute("aria-pressed",String(voiceEnabled));
-  voiceButton.textContent=voiceEnabled?"🔊 Voice On":"🔇 Voice Off";
 
-  /* Cancelling speech when switched off makes the control immediate. */
-  if(!voiceEnabled && "speechSynthesis" in window){
+  voiceButton.setAttribute(
+    "aria-pressed",
+    String(voiceEnabled)
+  );
+
+  voiceButton.textContent=
+    voiceEnabled
+      ? "🔊 Voice On"
+      : "🔇 Voice Off";
+
+  if(
+    !voiceEnabled &&
+    "speechSynthesis" in window
+  ){
     window.speechSynthesis.cancel();
   }
 };
 
-document.addEventListener("fullscreenchange",()=>{
-  /* Fullscreen can be denied or revoked by the browser. No state change is
-     needed; the normal reveal controls remain available. */
-});
+/* ---------- FULLSCREEN STATE ---------- */
 
-skinButton.onclick=randomSkin;
+document.addEventListener(
+  "fullscreenchange",
+  ()=>{
+    /*
+      Fullscreen can be denied or revoked by the browser.
+      The dice roller itself doesn't depend on fullscreen.
+    */
+  }
+);
+
+/* ---------- SWIPE DOWN TO REVEAL CONTROLS ---------- */
 
 let touchStartY=null;
-document.addEventListener("touchstart",e=>{
-  if(e.touches.length===1) touchStartY=e.touches[0].clientY;
-},{passive:true});
-document.addEventListener("touchend",e=>{
-  if(touchStartY===null)return;
-  const dy=e.changedTouches[0].clientY-touchStartY;
-  if(app.classList.contains("controls-hidden") && dy>55){
-    showControls(true);
-  }
-  touchStartY=null;
-},{passive:true});
 
+document.addEventListener(
+  "touchstart",
+  e=>{
+    if(e.touches.length===1){
+      touchStartY=e.touches[0].clientY;
+    }
+  },
+  {passive:true}
+);
+
+document.addEventListener(
+  "touchend",
+  e=>{
+    if(touchStartY===null){
+      return;
+    }
+
+    const dy=
+      e.changedTouches[0].clientY-touchStartY;
+
+    if(
+      app.classList.contains("controls-hidden") &&
+      dy>55
+    ){
+      showControls(true);
+    }
+
+    touchStartY=null;
+  },
+  {passive:true}
+);
+
+/* ---------- INITIALIZE ---------- */
 
 randomSkin();
 renderControls();
 renderDice();
 </script>
+
 </body>
 </html>
