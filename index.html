@@ -74,6 +74,36 @@ select{
  width:100%;height:100%;display:block;overflow:visible;
  filter:drop-shadow(0 14px 18px #0007);
 }
+.coin-wrap{
+ position:relative;width:var(--size);height:var(--size);display:grid;place-items:center;
+ perspective:900px;filter:drop-shadow(0 14px 18px #0007);
+}
+.coin-body{
+ width:78%;height:78%;position:relative;transform-style:preserve-3d;
+ border-radius:50%;
+}
+.coin-face{
+ position:absolute;inset:0;border-radius:50%;display:grid;place-items:center;
+ background:radial-gradient(circle at 35% 30%,var(--die2),var(--die) 72%);
+ border:clamp(5px,1vw,9px) solid var(--edge);
+ box-shadow:inset 0 0 0 clamp(5px,1vw,10px,#0002),inset 0 5px 10px #fff6,0 7px 10px #0005;
+ backface-visibility:hidden;
+ color:var(--pip);font-weight:1000;font-size:clamp(3rem,14vw,7rem);
+}
+.coin-face.back{transform:rotateY(180deg)}
+.coin-body.coin-land-1{transform:rotateY(0deg)}
+.coin-body.coin-land-2{transform:rotateY(180deg)}
+.coin-body.coin-flipping{animation:coinFlip 1.65s cubic-bezier(.12,.78,.18,1) both}
+.coin-body.coin-flipping .coin-face{visibility:hidden}
+@keyframes coinFlip{
+ 0%{transform:rotateY(0deg) rotateZ(-8deg) scale(.8)}
+ 18%{transform:rotateY(360deg) rotateZ(12deg) scale(1.04)}
+ 36%{transform:rotateY(720deg) rotateZ(-10deg) scale(.94)}
+ 55%{transform:rotateY(1080deg) rotateZ(8deg) scale(1.04)}
+ 74%{transform:rotateY(1440deg) rotateZ(-5deg) scale(.98)}
+ 90%{transform:rotateY(1680deg) rotateZ(2deg) scale(1.01)}
+ 100%{transform:rotateY(1800deg) rotateZ(0deg) scale(1)}
+}
 .die-wrap.d6{
  --depth:calc(var(--size)/2);
 }
@@ -311,6 +341,15 @@ function makeD6(value){
   Canvas is used so every die can show several visible numbered faces at once,
   and the entire faceted body tumbles during a roll.
 */
+function makeCoin(value){
+ const wrap=document.createElement("div");wrap.className="coin-wrap die-wrap";
+ const body=document.createElement("div");body.className=`coin-body coin-land-${value}`;
+ const front=document.createElement("div");front.className="coin-face front";front.textContent="1";
+ const back=document.createElement("div");back.className="coin-face back";back.textContent="2";
+ body.append(front,back);wrap.appendChild(body);
+ return wrap;
+}
+
 function makePolyDie(sides,value){
  const wrap=document.createElement("div");
  wrap.className="die-wrap poly";
@@ -320,7 +359,7 @@ function makePolyDie(sides,value){
  canvas.dataset.sides=sides;
  canvas.dataset.value=value;
  wrap.appendChild(canvas);
- drawPolyDie(canvas,sides,value,0);
+ drawPolyDie(canvas,sides,value,0,true);
  return wrap;
 }
 
@@ -362,7 +401,7 @@ function drawNumber(ctx,text,x,y,size){
  ctx.fillText(String(text),x,y);ctx.restore();
 }
 
-function drawPolyDie(canvas,sides,value,phase){
+function drawPolyDie(canvas,sides,value,phase,showNumber=true){
  const ctx=canvas.getContext("2d");
  const W=canvas.width,H=canvas.height;
  ctx.clearRect(0,0,W,H);
@@ -386,13 +425,21 @@ function drawPolyDie(canvas,sides,value,phase){
    than the previous flat one-sided polygon.
  */
  if(sides===4){
-  const top=[cx,cy-r*.72],left=[cx-r*.88,cy+r*.42],right=[cx+r*.88,cy+r*.42],bottom=[cx,cy+r*.9];
+  /* Tetrahedral D4: three visible triangular faces. The landed value is
+     always large and centered on the prominent front triangle. */
+  const top=[cx,cy-r*.82],left=[cx-r*.86,cy+r*.48],right=[cx+r*.86,cy+r*.48],bottom=[cx,cy+r*.88];
   const faces=[
-   {p:[top,left,bottom],s:-10,v:Math.max(1,(value%4)+1)},
-   {p:[top,right,bottom],s:-2,v:Math.max(1,((value+1)%4)+1)},
-   {p:[top,left,right],s:10,v:Math.max(1,((value+2)%4)+1)}
+   {p:[top,left,bottom],s:-10},
+   {p:[top,right,bottom],s:-2},
+   {p:[top,left,right],s:10}
   ];
-  faces.forEach((f,i)=>{ctx.beginPath();ctx.moveTo(...f.p[0]);f.p.slice(1).forEach(p=>ctx.lineTo(...p));ctx.closePath();faceFill(ctx,f.p,f.s);drawNumber(ctx,i===0?value:f.v,cx+(i-1)*115,cy+15,74)});
+  faces.forEach((f,i)=>{
+   ctx.beginPath();ctx.moveTo(...f.p[0]);f.p.slice(1).forEach(p=>ctx.lineTo(...p));ctx.closePath();
+   faceFill(ctx,f.p,f.s);
+  });
+  if(showNumber)drawNumber(ctx,value,cx,cy+r*.10,118);
+  ctx.save();ctx.strokeStyle=getComputedStyle(document.documentElement).getPropertyValue("--edge").trim()||"#fff";ctx.lineWidth=8;
+  ctx.beginPath();ctx.moveTo(top[0],top[1]);ctx.lineTo(bottom[0],bottom[1]);ctx.stroke();ctx.restore();
   return;
  }
 
@@ -405,7 +452,7 @@ function drawPolyDie(canvas,sides,value,phase){
   faceFill(ctx,[center,a,b],-16+i*2);
   const mx=(center.x+a[0]+b[0])/3,my=(center.y+a[1]+b[1])/3;
   const faceNum=((value-1+i)%sides)+1;
-  drawNumber(ctx,faceNum,mx,my,Math.max(30,Math.min(58,520/n)));
+  if(showNumber)drawNumber(ctx,faceNum,mx,my,Math.max(30,Math.min(58,520/n)));
  }
 
  /* Front central face, raised above the ring. */
@@ -419,21 +466,21 @@ function drawPolyDie(canvas,sides,value,phase){
  }
  ctx.moveTo(front[0][0],front[0][1]);front.slice(1).forEach(p=>ctx.lineTo(p[0],p[1]));
  ctx.closePath();faceFill(ctx,front,12);
- drawNumber(ctx,value,cx,cy,Math.max(62,Math.min(105,700/Math.sqrt(sides))));
+ if(showNumber)drawNumber(ctx,value,cx,cy,Math.max(62,Math.min(105,700/Math.sqrt(sides))));
 
  /* Little facet highlights make the body read as a die instead of a flat sign. */
  ctx.save();ctx.globalAlpha=.18;ctx.fillStyle="#fff";
  ctx.beginPath();ctx.arc(cx-r*.22,cy-r*.22,r*.24,0,Math.PI*2);ctx.fill();ctx.restore();
 
  ctx.save();ctx.fillStyle=textColor();ctx.globalAlpha=.4;ctx.font="800 24px system-ui";
- ctx.textAlign="right";ctx.textBaseline="bottom";ctx.fillText(`D${sides}`,W-28,H-24);ctx.restore();
+ ctx.textAlign="right";ctx.textBaseline="bottom";if(showNumber)ctx.fillText(`D${sides}`,W-28,H-24);ctx.restore();
 }
 
 function renderDice(){
  dice.innerHTML="";dice.className=`dice count-${settings.length}`;
  settings.forEach((s,i)=>{
   const v=Math.min(values[i]||1,s);values[i]=v;
-  dice.appendChild(s===6?makeD6(v):makePolyDie(s,v));
+  dice.appendChild(s===6?makeD6(v):s===2?makeCoin(v):makePolyDie(s,v));
  });
 }
 
@@ -480,10 +527,22 @@ function showControls(force=false){if(auto&&!force)return;app.classList.remove("
 function startRollAnimation(){
  [...dice.children].forEach((wrap,i)=>{
   wrap.classList.remove("roll","settle");
-  const cube=wrap.querySelector(".die-cube");
-  if(cube){cube.style.animation="none";cube.style.transform="";void cube.offsetWidth;cube.style.animation=""; }
-  const canvas=wrap.querySelector(".die-canvas");
-  if(canvas){canvas.style.animation="none";void canvas.offsetWidth;canvas.style.animation="";}
+  const sides=settings[i];
+
+  if(sides===6){
+   const cube=wrap.querySelector(".die-cube");
+   if(cube){cube.style.animation="none";cube.style.transform="";void cube.offsetWidth;cube.style.animation="";}
+  }else if(sides===2){
+   const coin=wrap.querySelector(".coin-body");
+   if(coin){coin.classList.remove("coin-flipping");void coin.offsetWidth;coin.classList.add("coin-flipping");}
+  }else{
+   /* Keep the faceted body visible, but erase every number while rolling. */
+   const canvas=wrap.querySelector(".die-canvas");
+   if(canvas){
+    canvas.style.animation="none";void canvas.offsetWidth;canvas.style.animation="";
+    drawPolyDie(canvas,sides,values[i],0,false);
+   }
+  }
   wrap.classList.add("roll");
  });
  rollNoise();[320,690,1040,1400].forEach(t=>setTimeout(clack,t));
@@ -494,10 +553,17 @@ function finishRoll(result){
   const sides=settings[i],value=result[i];
   if(sides===6){
    const cube=wrap.querySelector(".die-cube");
-   if(cube){cube.style.animation="none";cube.style.transform=D6_ORIENT[value]}
+   if(cube){cube.style.animation="none";cube.style.transform=D6_ORIENT[value];}
+  }else if(sides===2){
+   const coin=wrap.querySelector(".coin-body");
+   if(coin){
+    coin.classList.remove("coin-flipping");
+    coin.classList.remove("coin-land-1","coin-land-2");
+    coin.classList.add(`coin-land-${value}`);
+   }
   }else{
    const canvas=wrap.querySelector(".die-canvas");
-   if(canvas){canvas.style.animation="none";canvas.style.transform="";drawPolyDie(canvas,sides,value,0)}
+   if(canvas){canvas.style.animation="none";canvas.style.transform="";drawPolyDie(canvas,sides,value,0,true);}
   }
   wrap.classList.remove("roll");wrap.classList.add("settle");
   values[i]=value;setTimeout(()=>wrap.classList.remove("settle"),280);
